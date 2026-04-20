@@ -231,7 +231,7 @@ Otherwise: this probably pays for itself within the first week.
 
 ## 🤝 Contributing
 
-PRs welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, PR guidelines, translation workflow, and how to report bugs.
+PRs welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, PR guidelines, translation workflow, and how to report bugs. Participation in this project is governed by our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 TL;DR:
 
