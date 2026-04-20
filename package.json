@@ -15,8 +15,9 @@
   ],
   "scripts": {
     "build": "tsc && node scripts/copy-templates.js",
-    "prepublishOnly": "npm run build",
-    "test": "node --test dist/test/**/*.test.js"
+    "prepublishOnly": "npm run build && npm test",
+    "test": "node --test test/*.test.js",
+    "test:ci": "npm run build && npm test"
   },
   "engines": {
     "node": ">=18.0.0"
