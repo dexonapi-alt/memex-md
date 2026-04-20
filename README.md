@@ -202,7 +202,7 @@ PRs welcome. Please:
 
 ## 📄 License
 
-MIT.
+MIT — see [LICENSE](LICENSE).
 
 ---
 
