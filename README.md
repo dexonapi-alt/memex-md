@@ -91,7 +91,7 @@ Open `.claude/knowledge/decisions.md`, fill in the details, and commit. Next tim
 | Command | What it does |
 |---|---|
 | `claude-memex draft [--staged\|--working\|--commit <sha>] [--write]` | Ask Claude to propose knowledge entries from a git diff |
-| `claude-memex ask "<question>"` | Ask Claude a question answered strictly from your knowledge base |
+| `claude-memex ask [--scope <s,s>] "<question>"` | Ask Claude a question answered strictly from your knowledge base (`--scope` narrows which files are loaded) |
 
 **Automation**
 
@@ -117,8 +117,13 @@ Reads the diff, asks Claude to identify anything worth recording (new decisions,
 ### `ask` — semantic search without embeddings
 ```bash
 npx claude-memex ask "why did we pick SQLite locally?"
+
+# For larger knowledge bases, narrow to specific scopes:
+npx claude-memex ask --scope decisions,gotchas "why did we pick SQLite locally?"
 ```
-Loads every `.md` in `.claude/knowledge/` and asks Claude — scoped strictly to the knowledge base, with source citations. No vector DB, no index to maintain. Claude does the semantic matching.
+Loads every `.md` in `.claude/knowledge/` (or only the scopes you name) and asks Claude — scoped strictly to the knowledge base, with source citations. No vector DB, no index to maintain. Claude does the semantic matching.
+
+`--scope` is how the tool scales: when your knowledge base grows past a few hundred entries, load only the scopes a question actually needs.
 
 ### SessionStart hook — stale-check on every session
 Registered automatically by `init`. On every Claude Code session start, prints one line flagging entries older than 180 days:

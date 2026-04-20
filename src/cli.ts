@@ -27,7 +27,10 @@ Core commands:
 Claude-powered commands:
   draft [--staged|--working|--commit <sha>] [--write]
                                    Propose knowledge entries from a git diff
-  ask "<question>"                 Answer a question using the knowledge base
+  ask [--scope <s,s>] "<question>" Answer a question using the knowledge base
+                                   (--scope narrows which files are loaded:
+                                   architecture, decisions, patterns, gotchas,
+                                   glossary — comma-separated)
 
 Automation:
   stale [--days N] [--brief]       List stale entries (used by SessionStart hook)
