@@ -35,7 +35,7 @@ This Code of Conduct applies within all community spaces, and also applies when 
 
 ## Reporting
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the maintainers at **joy@doctorsstudio.com**.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the maintainer at **dexoncabreros.dis@gmail.com**.
 
 All complaints will be reviewed and investigated promptly and fairly. All maintainers are obligated to respect the privacy and security of the reporter of any incident.
 

@@ -59,7 +59,7 @@ Open an issue at https://github.com/dexonapi-alt/claude-memex/issues with:
 
 ## Code of conduct
 
-Be kind. Assume good faith. Disagreement is fine; disrespect is not. Full text: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Report issues to **joy@doctorsstudio.com**.
+Be kind. Assume good faith. Disagreement is fine; disrespect is not. Full text: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Report issues to **dexoncabreros.dis@gmail.com**.
 
 ## License
 
