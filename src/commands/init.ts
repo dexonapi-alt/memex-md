@@ -2,7 +2,9 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import {
   claudeDir,
+  commandsDir,
   knowledgeDir,
+  plansDir,
   repoRoot,
   settingsPath,
   skillDir,
@@ -69,34 +71,41 @@ and shared with teammates.
 Never hide which system fired. If you realize mid-flight that you put a fact in
 the wrong place, say so and move it.
 
-### Scopes
+### What to consult
 
-Before answering questions or making non-trivial changes, consult
-\`.claude/knowledge/\`:
+Before answering questions or making non-trivial changes:
 
-- \`architecture.md\` — system shape, services, data flow
-- \`decisions.md\` — non-obvious choices and their rationale
-- \`patterns.md\` — reusable code patterns in this codebase
-- \`gotchas.md\` — past bugs and non-obvious constraints
-- \`glossary.md\` — project-specific terminology
+1. Read \`.claude/knowledge/INDEX.md\` first. Then open the relevant scope file(s):
+   - \`.claude/knowledge/architecture.md\` — system shape, services, data flow
+   - \`.claude/knowledge/decisions.md\` — non-obvious choices and their rationale
+   - \`.claude/knowledge/patterns.md\` — reusable code patterns
+   - \`.claude/knowledge/gotchas.md\` — past bugs and non-obvious constraints
+   - \`.claude/knowledge/glossary.md\` — project-specific terminology
+2. Read \`.claude/plans/INDEX.md\` to see what plans exist. If the user's request matches an existing plan, open and follow it.
+3. Honour any rules in the \`## Preferences\` section of this file.
 
-### How to update
+### Re-read rule (IMPORTANT)
 
-When work reveals a new decision, pattern, or gotcha, record it:
+After ANY \`/memex:*\` slash command runs, or after \`memex-md\` CLI is invoked (\`add\`, \`preference\`, \`draft --write\`, \`promote\`), the repo state on disk has changed. **Re-read the affected \`INDEX.md\` and scope/plan file before your next substantive response** so the fresh content is in your context. Never rely solely on what you remember writing — the disk is the source of truth.
+
+### Slash commands (inside Claude Code)
+
+- \`/memex:preference "<text>"\` — classify and save a preference (project-level → CLAUDE.md; user-level → auto-memory).
+- \`/memex:fix "<description>"\` — capture a just-resolved bug as a \`gotchas.md\` entry (symptom / root cause / fix / prevention).
+- \`/memex:plan "<task>"\` — write a design plan under \`.claude/plans/<date>-<slug>.md\` with affected files, migrations, hooks, dependencies, risks, and an ordered implementation plan.
+
+Anything prefixed with \`/memex:\` touches the knowledge base, plans, or preferences — never your auto-memory.
+
+### CLI (outside Claude Code or via the Bash tool)
 
 \`\`\`
-npx memex-md add <scope> "<title>"
-\`\`\`
-
-Or let Claude draft entries from a diff:
-
-\`\`\`
-npx memex-md draft --staged --write
+npx memex-md add <scope> "<title>"     # new knowledge entry
+npx memex-md preference "<text>"       # project-level preference in CLAUDE.md
+npx memex-md draft --staged --write    # auto-draft from diff
+npx memex-md promote                   # migrate auto-memory -> KB
 \`\`\`
 
 See \`.claude/skills/knowledge-update/SKILL.md\` for full triggers and conventions.
-Run \`npx memex-md promote\` to move any repo-level facts already stored in
-machine memory into \`.claude/knowledge/\`.
 ${CLAUDE_MD_END}`;
 
 function escapeRegex(s: string): string {
@@ -155,6 +164,8 @@ export async function init(args: string[]): Promise<void> {
 
   copyDir(path.join(templates, "knowledge"), knowledgeDir());
   copyDir(path.join(templates, "skills", "knowledge-update"), skillDir());
+  copyDir(path.join(templates, "commands", "memex"), commandsDir());
+  installPlansSeed(templates, force);
 
   const hookInstalled = installPreCommitHook(templates, force);
   const prTemplateInstalled = installPrTemplate(templates, force);
@@ -172,6 +183,8 @@ export async function init(args: string[]): Promise<void> {
   console.log("Initialized memex-md:");
   console.log("  .claude/knowledge/                scaffolded");
   console.log("  .claude/skills/knowledge-update/  installed");
+  console.log("  .claude/commands/memex/           installed (3 slash commands)");
+  console.log("  .claude/plans/                    scaffolded");
   console.log(
     `  .claude/hooks/pre-commit          ${hookInstalled ? "installed" : "skipped (exists)"}`
   );
@@ -217,6 +230,15 @@ function installPreCommitHook(templates: string, force: boolean): boolean {
     // Windows chmod may fail; hook still runs via sh/Git Bash.
   }
   return true;
+}
+
+function installPlansSeed(templates: string, force: boolean): void {
+  const dest = path.join(plansDir(), "INDEX.md");
+  if (fs.existsSync(dest) && !force) return;
+  const src = path.join(templates, "plans", "INDEX.md");
+  if (!fs.existsSync(src)) return;
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  fs.copyFileSync(src, dest);
 }
 
 function installPrTemplate(templates: string, force: boolean): boolean {

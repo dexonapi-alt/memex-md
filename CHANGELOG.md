@@ -6,6 +6,27 @@ All notable changes to `memex-md` are documented here. This project follows [Sem
 
 Nothing yet.
 
+## [0.5.0] — 2026-04-20
+
+The "slash commands" release. Adds a `/memex:*` namespace inside Claude Code so the knowledge base, plans, and preferences get a first-class entry point shared across the team.
+
+### Added
+
+- **`/memex:preference "<text>"`** (slash command) — classifies the preference as project-level or user-level, then routes: project → CLAUDE.md `## Preferences` section; user → Claude's auto-memory. Scaffolded by `init` at `.claude/commands/memex/preference.md`.
+- **`/memex:fix "<description>"`** (slash command) — captures a just-resolved bug as a `gotchas.md` entry with Symptom / Root cause / Fix / Prevention. Scaffolded at `.claude/commands/memex/fix.md`.
+- **`/memex:plan "<task>"`** (slash command) — reads knowledge base + scans codebase, then writes a full design plan to `.claude/plans/<date>-<slug>.md` (Goal / Context / Affected files / Migrations / Hooks / Dependencies / Risks / Implementation order / Verification) and updates a plans index. Scaffolded at `.claude/commands/memex/plan.md`.
+- **`memex-md preference "<text>"`** (CLI) — underlying command that appends a bullet to `CLAUDE.md`'s `## Preferences` section. Idempotent: won't duplicate an existing bullet. Creates the section if missing. Alias: `memex-md pref`.
+- **`.claude/plans/` directory with `INDEX.md` seed** — new home for design artifacts created by `/memex:plan`. Git-tracked like the rest of memex-md.
+- **"Re-read rule" in `CLAUDE.md` block** — explicit instruction telling Claude that after ANY `/memex:*` command or `memex-md` CLI invocation, the disk state has changed, and Claude must re-read the affected INDEX.md / scope / plan file before its next substantive response. Closes the "Claude forgets what was just written" gap.
+- **Slash-command reference in the CLAUDE.md block** — points Claude at `/memex:preference`, `/memex:fix`, `/memex:plan` with short descriptions.
+- 5 new tests in `test/preference.test.js` (CLI correctness, idempotency, multi-entry, empty input, `pref` alias).
+- 4 new tests in `test/slash-commands.test.js` (slash command files installed, plans INDEX seeded, init output, CLAUDE.md block content).
+
+### Changed
+
+- **`init` now scaffolds** `.claude/commands/memex/` and `.claude/plans/` in addition to everything prior releases installed.
+- **CLAUDE.md block rewritten** — merges the existing memory-routing rule with the new re-read rule, consult checklist (knowledge INDEX → plans INDEX → preferences), slash command reference, and CLI reference. `--force` on `init` updates the block in place.
+
 ## [0.4.0] — 2026-04-20
 
 The "never miss a moment" release. Turns knowledge capture from a discipline problem into a reflex.
@@ -95,7 +116,8 @@ The "team discipline" release. Project was renamed from `claude-memex` to `memex
 - Scaffolded `.claude/knowledge/` + `knowledge-update` skill + post-edit hook.
 - Zero runtime dependencies.
 
-[Unreleased]: https://github.com/dexonapi-alt/memex-md/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/dexonapi-alt/memex-md/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/dexonapi-alt/memex-md/releases/tag/v0.5.0
 [0.4.0]: https://github.com/dexonapi-alt/memex-md/releases/tag/v0.4.0
 [0.3.2]: https://github.com/dexonapi-alt/memex-md/releases/tag/v0.3.2
 [0.3.1]: https://github.com/dexonapi-alt/memex-md/releases/tag/v0.3.1

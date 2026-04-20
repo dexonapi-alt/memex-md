@@ -35,6 +35,14 @@ export function skillDir(): string {
   return path.join(claudeDir(), "skills", "knowledge-update");
 }
 
+export function commandsDir(): string {
+  return path.join(claudeDir(), "commands", "memex");
+}
+
+export function plansDir(): string {
+  return path.join(claudeDir(), "plans");
+}
+
 export function templatesRoot(): string {
   return path.resolve(__dirname, "..", "templates");
 }

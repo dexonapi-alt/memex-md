@@ -88,6 +88,7 @@ Open `.claude/knowledge/decisions.md`, fill in the details, and commit. Next tim
 | `memex-md search <query>` | Grep across all entries |
 | `memex-md validate` | Check everything is in order |
 | `memex-md prune [--days N]` | Flag old entries (default: >180 days) |
+| `memex-md preference "<text>"` | Append a project-level preference to CLAUDE.md's `## Preferences` section |
 
 **Claude-powered (requires Claude Code CLI on PATH)**
 
@@ -186,6 +187,20 @@ Entries can reference each other with two optional bullets:
 `memex-md graph` walks those links and prints an ASCII view of the chains — who supersedes whom, who relates to whom, and any dangling references (ids that don't resolve). Pass `--mermaid` to emit a `graph TD` block you can paste into a GitHub Markdown comment and have it render.
 
 This gives you a lightweight intelligence layer without pulling in a graph DB: plain Markdown conventions, walked at query time.
+
+## 💬 Slash commands inside Claude Code
+
+`init` scaffolds three commands under `.claude/commands/memex/` that map to memex-md actions. Anything prefixed with `/memex:` touches the repo (knowledge base, plans, preferences) — never Claude's machine-local auto-memory.
+
+| Slash command | What it does |
+|---|---|
+| `/memex:preference "<text>"` | Classifies the preference (project-level → CLAUDE.md, user-level → auto-memory) and saves. |
+| `/memex:fix "<description>"` | Reads the current git diff, drafts a `gotchas.md` entry with Symptom / Root cause / Fix / Prevention, appends to `.claude/knowledge/gotchas.md`, and reads it back. |
+| `/memex:plan "<task>"` | Reads the knowledge base, scans the codebase, writes a full design plan to `.claude/plans/<date>-<slug>.md` (Goal / Context / Affected files / Migrations / Hooks / Dependencies / Risks / Implementation order), and updates a plans index. |
+
+**Durability for teams:** these commands live in the repo (`.claude/commands/memex/*.md`), so every teammate who clones the repo gets the same shortcuts on first session.
+
+**Re-read rule:** after any `/memex:*` command runs, Claude is instructed (via the `CLAUDE.md` block) to re-read the updated `INDEX.md` and scope/plan file before its next substantive response. The disk is the source of truth, not what Claude remembers writing.
 
 ## 🗂 Scopes
 

@@ -10,5 +10,6 @@ export { stale } from "./commands/stale";
 export { check } from "./commands/check";
 export { graph } from "./commands/graph";
 export { promote } from "./commands/promote";
+export { preference } from "./commands/preference";
 export { VALID_SCOPES } from "./lib/paths";
 export type { Scope } from "./lib/paths";

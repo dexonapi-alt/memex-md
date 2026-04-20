@@ -10,8 +10,9 @@ import { stale } from "./commands/stale";
 import { check } from "./commands/check";
 import { graph } from "./commands/graph";
 import { promote } from "./commands/promote";
+import { preference } from "./commands/preference";
 
-const VERSION = "0.4.0";
+const VERSION = "0.5.0";
 
 const HELP = `memex-md ${VERSION} — in-repo knowledge base for Claude Code
 
@@ -29,6 +30,9 @@ Core commands:
   search <query>                   Grep across all knowledge files
   validate                         Check knowledge base integrity
   prune [--days N]                 Flag entries untouched for N days (default 180)
+  preference "<text>"              Append a project-level preference bullet to
+                                   CLAUDE.md's "## Preferences" section.
+                                   Powers the /memex:preference slash command.
 
 Claude-powered commands:
   draft [--staged|--working|--commit <sha>] [--write] [--auto]
@@ -112,6 +116,10 @@ async function main(): Promise<void> {
       break;
     case "promote":
       await promote(rest);
+      break;
+    case "preference":
+    case "pref":
+      await preference(rest);
       break;
     case "version":
     case "--version":
