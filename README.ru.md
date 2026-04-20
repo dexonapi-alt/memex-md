@@ -1,11 +1,11 @@
-# claude-memex
+# memex-md
 
 > **Дайте Claude Code память, которая живёт в вашем репозитории, а не в домашней папке.**
 
 [English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko.md) | [日本語](README.ja.md) | **Русский** | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md)
 
 <p align="center">
-  <img src="./assets/claude-memex-banner.png" alt="claude-memex — ваши знания сохранены. Теперь Claude Code уже знает их в следующий раз." />
+  <img src="./assets/memex-md-banner.png" alt="memex-md — ваши знания сохранены. Теперь Claude Code уже знает их в следующий раз." />
 </p>
 
 ---

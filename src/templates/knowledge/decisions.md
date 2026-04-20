@@ -14,7 +14,7 @@ Format for each entry:
 - **Related:** `<entry-id>, <entry-id>` (optional — cross-references)
 
 When an entry is superseded, keep the original in place and add a new entry
-pointing at it with `**Supersedes:**`. Use `claude-memex graph` to see the
+pointing at it with `**Supersedes:**`. Use `memex-md graph` to see the
 chains.
 
 <!-- Append entries below. Each starts with `## <title>`. -->

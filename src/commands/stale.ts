@@ -57,7 +57,7 @@ export async function stale(args: string[]): Promise<void> {
     const sample = entries.slice(0, 3).map((e) => `${e.file}:"${e.title}"`);
     const more = entries.length > 3 ? ` (+${entries.length - 3} more)` : "";
     console.log(
-      `[claude-memex] ${entries.length} knowledge entr${
+      `[memex-md] ${entries.length} knowledge entr${
         entries.length === 1 ? "y" : "ies"
       } older than ${days} days — review for staleness: ${sample.join(", ")}${more}`
     );

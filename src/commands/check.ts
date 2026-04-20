@@ -97,7 +97,7 @@ export async function check(args: string[]): Promise<void> {
       `(typically decisions.md or gotchas.md).`
   );
   console.log(
-    `\nFix: run \`claude-memex draft ${staged ? "--staged" : "--from-commit <sha>"} --write\` or add entries manually.`
+    `\nFix: run \`memex-md draft ${staged ? "--staged" : "--from-commit <sha>"} --write\` or add entries manually.`
   );
 
   if (strict || process.env.CI) {

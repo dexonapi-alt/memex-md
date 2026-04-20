@@ -1,11 +1,11 @@
-# claude-memex
+# memex-md
 
 > **Dê ao Claude Code uma memória que vive no seu repositório — não na sua pasta pessoal.**
 
 [English](README.md) | [Español](README.es.md) | **Português (Brasil)** | [한국어](README.ko.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md)
 
 <p align="center">
-  <img src="./assets/claude-memex-banner.png" alt="claude-memex — seu conhecimento foi preservado. Agora o Claude Code já sabe disso na próxima vez." />
+  <img src="./assets/memex-md-banner.png" alt="memex-md — seu conhecimento foi preservado. Agora o Claude Code já sabe disso na próxima vez." />
 </p>
 
 ### 🛠 Construído com
@@ -30,10 +30,10 @@ O Claude **tem** um recurso de memória — mas ele fica guardado na sua pasta p
 
 ## ✨ A solução
 
-O `claude-memex` dá ao seu repositório uma memória própria. Um comando cria uma pasta onde o Claude anota o que aprende — e relê no início de cada sessão:
+O `memex-md` dá ao seu repositório uma memória própria. Um comando cria uma pasta onde o Claude anota o que aprende — e relê no início de cada sessão:
 
 ```bash
-npx claude-memex init
+npx memex-md init
 ```
 
 Isso cria:
@@ -57,14 +57,14 @@ Faça commit da pasta. O Claude lê ela toda sessão. Só isso.
 
 ```bash
 # Em qualquer repositório onde você use o Claude Code:
-npm install --save-dev claude-memex
-npx claude-memex init
+npm install --save-dev memex-md
+npx memex-md init
 
 # Faça commit da nova pasta .claude/
-git add .claude && git commit -m "Add claude-memex"
+git add .claude && git commit -m "Add memex-md"
 
 # Adicione sua primeira entrada
-npx claude-memex add decisions "escolhemos SQLite em vez de Postgres para desenvolvimento local"
+npx memex-md add decisions "escolhemos SQLite em vez de Postgres para desenvolvimento local"
 ```
 
 Abra `.claude/knowledge/decisions.md`, preencha os detalhes e faça commit. Na próxima vez que você iniciar o Claude, essa decisão já estará no contexto.
@@ -75,58 +75,58 @@ Abra `.claude/knowledge/decisions.md`, preencha os detalhes e faça commit. Na p
 
 | Comando | O que faz |
 |---|---|
-| `claude-memex init` | Configura `.claude/knowledge/`, o skill e os hooks |
-| `claude-memex add <escopo> "<título>"` | Adiciona uma nova entrada a um escopo |
-| `claude-memex list [escopo]` | Mostra o que tem na sua base de conhecimento |
-| `claude-memex search <consulta>` | Grep em todas as entradas |
-| `claude-memex validate` | Confere se tudo está em ordem |
-| `claude-memex prune [--days N]` | Sinaliza entradas antigas (padrão: >180 dias) |
+| `memex-md init` | Configura `.claude/knowledge/`, o skill e os hooks |
+| `memex-md add <escopo> "<título>"` | Adiciona uma nova entrada a um escopo |
+| `memex-md list [escopo]` | Mostra o que tem na sua base de conhecimento |
+| `memex-md search <consulta>` | Grep em todas as entradas |
+| `memex-md validate` | Confere se tudo está em ordem |
+| `memex-md prune [--days N]` | Sinaliza entradas antigas (padrão: >180 dias) |
 
 **Usando o Claude (requer o CLI do Claude Code no PATH)**
 
 | Comando | O que faz |
 |---|---|
-| `claude-memex draft [--staged\|--working\|--commit <sha>] [--write]` | Pede ao Claude para propor entradas a partir de um git diff |
-| `claude-memex ask "<pergunta>"` | Faz uma pergunta respondida estritamente com base na sua base de conhecimento |
+| `memex-md draft [--staged\|--working\|--commit <sha>] [--write]` | Pede ao Claude para propor entradas a partir de um git diff |
+| `memex-md ask "<pergunta>"` | Faz uma pergunta respondida estritamente com base na sua base de conhecimento |
 
 **Automação**
 
 | Comando | O que faz |
 |---|---|
-| `claude-memex stale [--days N] [--brief]` | Lista entradas desatualizadas (alimenta o hook SessionStart) |
-| `claude-memex check [--base <ref>] [--patterns <glob,glob>] [--strict]` | Checagem de CI: falha se arquivos sensíveis foram alterados sem atualizar a base de conhecimento |
+| `memex-md stale [--days N] [--brief]` | Lista entradas desatualizadas (alimenta o hook SessionStart) |
+| `memex-md check [--base <ref>] [--patterns <glob,glob>] [--strict]` | Checagem de CI: falha se arquivos sensíveis foram alterados sem atualizar a base de conhecimento |
 
 ## 🤖 A automação, explicada
 
-Uma memória que depende de disciplina é uma memória que se deteriora. O `claude-memex` fecha essa lacuna de quatro formas — para você nunca precisar lembrar de mantê-la:
+Uma memória que depende de disciplina é uma memória que se deteriora. O `memex-md` fecha essa lacuna de quatro formas — para você nunca precisar lembrar de mantê-la:
 
 ### `draft` — propõe entradas a partir de um diff
 ```bash
 # A partir do seu último commit
-npx claude-memex draft
+npx memex-md draft
 
 # A partir de mudanças staged, gravando as entradas propostas nos arquivos
-npx claude-memex draft --staged --write
+npx memex-md draft --staged --write
 ```
 Lê o diff, pede ao Claude para identificar algo que valha a pena registrar (novas decisões, padrões, armadilhas) e ou imprime as propostas ou as anexa diretamente ao arquivo de escopo correto. Transforma *"preciso lembrar disso"* num reflexo de um comando só.
 
 ### `ask` — busca semântica sem embeddings
 ```bash
-npx claude-memex ask "por que escolhemos SQLite local?"
+npx memex-md ask "por que escolhemos SQLite local?"
 ```
 Carrega todo `.md` em `.claude/knowledge/` e faz a pergunta ao Claude — restrito estritamente à base de conhecimento, com citações da fonte. Sem banco vetorial, sem índice para manter. O Claude faz a correspondência semântica.
 
 ### Hook SessionStart — checagem de entradas antigas a cada sessão
 Registrado automaticamente pelo `init`. A cada início de sessão do Claude Code, imprime uma linha sinalizando entradas com mais de 180 dias:
 ```
-[claude-memex] 3 knowledge entries older than 180 days — review for staleness: decisions.md:"Chose SQLite...", gotchas.md:"..."
+[memex-md] 3 knowledge entries older than 180 days — review for staleness: decisions.md:"Chose SQLite...", gotchas.md:"..."
 ```
 Silencioso quando nada está desatualizado. Te dá um empurrãozinho, não uma parede de texto.
 
 ### `check` — validação estilo CI
 ```bash
 # No GitHub Actions ou num hook pre-push:
-npx claude-memex check --base origin/main...HEAD --strict
+npx memex-md check --base origin/main...HEAD --strict
 ```
 Falha a checagem quando alguém comita uma mudança de migration / auth / schema / config sem atualizar a base de conhecimento. A lista de padrões pode ser sobrescrita via `--patterns`. Retorna código `1` com `--strict` ou quando `CI=true`.
 
@@ -152,7 +152,7 @@ O Claude Code já tem três formas de lembrar coisas. Cada uma tem uma limitaç�
 | 🧩 **Auto-memória** | `~/.claude/projects/<slug>/memory/` | Vive em **uma máquina**. Colegas de equipe, CI e seu outro notebook começam do zero. Não é revisável em PRs. |
 | 📄 **`CLAUDE.md`** | No seu repositório | Viaja com o código ✅ — mas é um único arquivo pensado para regras estáveis, não um arquivo crescente com dezenas de decisões, padrões e armadilhas. |
 
-O `claude-memex` preenche essa lacuna: uma base de conhecimento **no repositório**, **organizada por escopo** e **autoatualizável**. Versionada no git. Revisável em PRs. Igual em toda máquina.
+O `memex-md` preenche essa lacuna: uma base de conhecimento **no repositório**, **organizada por escopo** e **autoatualizável**. Versionada no git. Revisável em PRs. Igual em toda máquina.
 
 ### O que realmente muda
 

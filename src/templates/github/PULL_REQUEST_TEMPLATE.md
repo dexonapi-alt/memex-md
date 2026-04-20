@@ -6,7 +6,7 @@
 
 <!-- If this PR introduces decisions, patterns, or gotchas worth preserving
      across sessions, record them under .claude/knowledge/. Run
-     `npx claude-memex draft --staged --write` for proposals from the diff. -->
+     `npx memex-md draft --staged --write` for proposals from the diff. -->
 
 - [ ] No new knowledge entries needed for this change
 - [ ] Updated `decisions.md`

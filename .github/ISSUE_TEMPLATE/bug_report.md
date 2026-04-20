@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report a bug in claude-memex
+about: Report a bug in memex-md
 title: "[bug] "
 labels: bug
 assignees: ''
@@ -22,7 +22,7 @@ assignees: ''
 
 ## Environment
 
-- `claude-memex` version: <!-- run: npx claude-memex version -->
+- `memex-md` version: <!-- run: npx memex-md version -->
 - Node.js version: <!-- run: node --version -->
 - Claude Code version: <!-- run: claude --version -->
 - OS: <!-- Windows / macOS / Linux + version -->

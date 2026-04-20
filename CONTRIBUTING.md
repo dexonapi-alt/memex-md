@@ -1,4 +1,4 @@
-# Contributing to claude-memex
+# Contributing to memex-md
 
 Thanks for your interest in contributing. This project is a small, focused CLI â€” we try to keep it that way.
 
@@ -6,7 +6,7 @@ Thanks for your interest in contributing. This project is a small, focused CLI â
 
 ```bash
 git clone https://github.com/dexonapi-alt/claude-memex.git
-cd claude-memex
+cd memex-md
 npm install
 npm run build
 ```
@@ -14,7 +14,7 @@ npm run build
 Run the CLI from the build:
 
 ```bash
-node bin/claude-memex.js help
+node bin/memex-md.js help
 ```
 
 Test in a scratch project:
@@ -23,8 +23,8 @@ Test in a scratch project:
 npm pack
 cd /tmp && mkdir scratch && cd scratch && git init -q
 npm init -y
-npm install /path/to/claude-memex-<version>.tgz
-npx claude-memex init
+npm install /path/to/memex-md-<version>.tgz
+npx memex-md init
 ```
 
 ## Pull requests

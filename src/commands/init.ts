@@ -24,14 +24,14 @@ interface Settings {
   [k: string]: unknown;
 }
 
-const POST_EDIT_HOOK_ID = "claude-memex-knowledge-update";
+const POST_EDIT_HOOK_ID = "memex-md-knowledge-update";
 
 const POST_EDIT_COMMAND =
   "node -e \"console.log('[knowledge-update] " +
   POST_EDIT_HOOK_ID +
   ": consider updating .claude/knowledge/ if this change introduces a decision, pattern, or gotcha.')\"";
 
-const SESSION_START_COMMAND = "npx --no-install claude-memex stale --brief";
+const SESSION_START_COMMAND = "npx --no-install memex-md stale --brief";
 
 export async function init(args: string[]): Promise<void> {
   const force = args.includes("--force");
@@ -48,7 +48,7 @@ export async function init(args: string[]): Promise<void> {
   const templates = templatesRoot();
   if (!fs.existsSync(templates)) {
     console.error(
-      "Template files missing from package install. Reinstall claude-memex."
+      "Template files missing from package install. Reinstall memex-md."
     );
     process.exit(1);
   }
@@ -61,7 +61,7 @@ export async function init(args: string[]): Promise<void> {
 
   mergeHooks();
 
-  console.log("Initialized claude-memex:");
+  console.log("Initialized memex-md:");
   console.log("  .claude/knowledge/                scaffolded");
   console.log("  .claude/skills/knowledge-update/  installed");
   console.log(
@@ -77,7 +77,7 @@ export async function init(args: string[]): Promise<void> {
   console.log("Next:");
   console.log("  1. git add .claude/ .github/ && commit");
   console.log("  2. Edit .claude/knowledge/INDEX.md to taste");
-  console.log('  3. Try: claude-memex add decisions "your first decision"');
+  console.log('  3. Try: memex-md add decisions "your first decision"');
   if (hookInstalled) {
     console.log(
       "  4. (Optional) Activate the pre-commit hook: git config core.hooksPath .claude/hooks"
@@ -134,7 +134,7 @@ function mergeHooks(): void {
   existing.hooks.SessionStart ??= [];
   if (
     !existing.hooks.SessionStart.some((h) =>
-      JSON.stringify(h).includes("claude-memex stale")
+      JSON.stringify(h).includes("memex-md stale")
     )
   ) {
     existing.hooks.SessionStart.push({

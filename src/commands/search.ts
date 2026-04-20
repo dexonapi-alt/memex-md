@@ -7,7 +7,7 @@ export async function search(args: string[]): Promise<void> {
 
   const query = args.join(" ").trim();
   if (!query) {
-    console.error("Usage: claude-memex search <query>");
+    console.error("Usage: memex-md search <query>");
     process.exit(1);
   }
 

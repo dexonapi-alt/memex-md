@@ -46,7 +46,7 @@ function readKnowledge(scopes?: string[]): { text: string; files: string[] } {
 }
 
 function buildPrompt(question: string, kb: string): string {
-  return `You are answering a question about a software project using ONLY the knowledge base files provided below. The files live at .claude/knowledge/ and are maintained by the claude-memex tool.
+  return `You are answering a question about a software project using ONLY the knowledge base files provided below. The files live at .claude/knowledge/ and are maintained by the memex-md tool.
 
 Rules:
 - Cite the source file and entry title when you answer, e.g. "(decisions.md: Chose SQLite over Postgres)".
@@ -94,19 +94,19 @@ export async function ask(args: string[]): Promise<void> {
 
   const question = rest.join(" ").trim();
   if (!question) {
-    console.error('Usage: claude-memex ask [--scope <scope,scope>] "<question>"');
+    console.error('Usage: memex-md ask [--scope <scope,scope>] "<question>"');
     process.exit(1);
   }
 
   const { text: kb, files } = readKnowledge(scopes ?? undefined);
   if (!kb.trim()) {
-    console.error("Knowledge base is empty. Add entries with `claude-memex add`.");
+    console.error("Knowledge base is empty. Add entries with `memex-md add`.");
     process.exit(1);
   }
 
   if (scopes) {
     console.error(
-      `[claude-memex] asking against ${files.length} file(s): ${files.join(", ")}`
+      `[memex-md] asking against ${files.length} file(s): ${files.join(", ")}`
     );
   }
 

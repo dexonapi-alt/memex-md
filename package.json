@@ -1,9 +1,9 @@
 {
-  "name": "claude-memex",
-  "version": "0.2.0",
-  "description": "In-repo, self-updating knowledge base for Claude Code projects. Inspired by Vannevar Bush's memex. Scaffolds .claude/knowledge/, installs a knowledge-update skill, and wires a post-edit hook so your project's architecture, decisions, patterns, gotchas, and glossary live in git and stay fresh.",
+  "name": "memex-md",
+  "version": "0.3.0",
+  "description": "In-repo, self-updating, Markdown-based knowledge base for Claude Code projects. Inspired by Vannevar Bush's memex. Scaffolds .claude/knowledge/, installs a knowledge-update skill, and wires hooks so your project's architecture, decisions, patterns, gotchas, and glossary live in git and stay fresh. Zero runtime dependencies.",
   "bin": {
-    "claude-memex": "bin/claude-memex.js"
+    "memex-md": "bin/memex-md.js"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

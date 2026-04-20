@@ -1,7 +1,7 @@
 #!/bin/sh
-# claude-memex pre-commit — gentle nudge when sensitive files change.
+# memex-md pre-commit — gentle nudge when sensitive files change.
 #
-# Does NOT block the commit. Use `claude-memex check --strict` in CI for
+# Does NOT block the commit. Use `memex-md check --strict` in CI for
 # actual enforcement. This hook only prints a reminder.
 #
 # Activate (once per clone):
@@ -9,10 +9,10 @@
 #
 # Then `chmod +x .claude/hooks/pre-commit` if your platform needs it.
 
-if command -v claude-memex >/dev/null 2>&1; then
-  claude-memex check --staged 2>/dev/null || true
+if command -v memex-md >/dev/null 2>&1; then
+  memex-md check --staged 2>/dev/null || true
 else
-  npx --no-install claude-memex check --staged 2>/dev/null || true
+  npx --no-install memex-md check --staged 2>/dev/null || true
 fi
 
 exit 0

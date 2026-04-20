@@ -41,7 +41,7 @@ export function templatesRoot(): string {
 
 export function requireKnowledgeBase(): void {
   if (!fs.existsSync(knowledgeDir())) {
-    console.error("No knowledge base found. Run: claude-memex init");
+    console.error("No knowledge base found. Run: memex-md init");
     process.exit(1);
   }
 }

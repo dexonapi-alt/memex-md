@@ -140,7 +140,7 @@ export async function draft(args: string[]): Promise<void> {
   const indexMd = readIndex();
   const prompt = buildPrompt(truncate(diff, MAX_DIFF_CHARS), indexMd);
 
-  console.error("[claude-memex] drafting entries with claude -p ...");
+  console.error("[memex-md] drafting entries with claude -p ...");
   console.error("");
 
   let output: string;
@@ -153,25 +153,25 @@ export async function draft(args: string[]): Promise<void> {
 
   console.error("");
   if (/^\s*NO_ENTRIES_NEEDED\s*$/m.test(output)) {
-    console.error("[claude-memex] No entries warranted for this diff.");
+    console.error("[memex-md] No entries warranted for this diff.");
     return;
   }
 
   const parsed = parseEntries(output);
   if (parsed.length === 0) {
     console.error(
-      "[claude-memex] Claude did not emit any <SCOPE:...> entries. " +
+      "[memex-md] Claude did not emit any <SCOPE:...> entries. " +
         "Output was printed above; review and add manually if useful."
     );
     return;
   }
 
   if (args.includes("--write")) {
-    console.error(`[claude-memex] Writing ${parsed.length} entries:`);
+    console.error(`[memex-md] Writing ${parsed.length} entries:`);
     applyEntries(parsed);
   } else {
     console.error(
-      `[claude-memex] ${parsed.length} entries proposed above. ` +
+      `[memex-md] ${parsed.length} entries proposed above. ` +
         `Re-run with --write to append them to the knowledge base.`
     );
   }

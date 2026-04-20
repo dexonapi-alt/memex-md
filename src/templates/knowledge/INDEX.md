@@ -1,6 +1,6 @@
 # Project Knowledge Base
 
-Managed by `claude-memex`. These files are loaded into Claude Code context alongside `CLAUDE.md`. Keep them focused and current — they are institutional memory for this repo.
+Managed by `memex-md`. These files are loaded into Claude Code context alongside `CLAUDE.md`. Keep them focused and current — they are institutional memory for this repo.
 
 ## Scopes
 
@@ -16,10 +16,10 @@ Update whenever work reveals a non-obvious fact that the next contributor (human
 
 ## How to update
 
-- Run `claude-memex add <scope> "<title>"` to append a skeleton entry.
+- Run `memex-md add <scope> "<title>"` to append a skeleton entry.
 - Edit `.md` files directly for longer prose.
-- Run `claude-memex validate` before committing.
-- Run `claude-memex prune` occasionally to flag stale entries.
+- Run `memex-md validate` before committing.
+- Run `memex-md prune` occasionally to flag stale entries.
 
 ## What NOT to write here
 

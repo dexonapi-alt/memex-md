@@ -1,11 +1,11 @@
-# claude-memex
+# memex-md
 
 > **让 Claude Code 拥有存在于你的代码仓库中的记忆,而不是用户目录里。**
 
 [English](README.md) | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | **简体中文** | [繁體中文](README.zh-TW.md)
 
 <p align="center">
-  <img src="./assets/claude-memex-banner.png" alt="claude-memex — 你的知识已被保留。现在 Claude Code 下次就会知道。" />
+  <img src="./assets/memex-md-banner.png" alt="memex-md — 你的知识已被保留。现在 Claude Code 下次就会知道。" />
 </p>
 
 ### 🛠 技术栈
@@ -30,10 +30,10 @@ Claude **确实**有记忆功能,但它存在你的用户目录里(`~/.claude/..
 
 ## ✨ 解决方案
 
-`claude-memex` 给你的仓库配上它自己的记忆。一条命令就会在仓库里建好一个文件夹,Claude 把学到的东西写进去,并在每次会话开始时读回来:
+`memex-md` 给你的仓库配上它自己的记忆。一条命令就会在仓库里建好一个文件夹,Claude 把学到的东西写进去,并在每次会话开始时读回来:
 
 ```bash
-npx claude-memex init
+npx memex-md init
 ```
 
 这会生成:
@@ -57,14 +57,14 @@ npx claude-memex init
 
 ```bash
 # 在任何使用 Claude Code 的仓库里:
-npm install --save-dev claude-memex
-npx claude-memex init
+npm install --save-dev memex-md
+npx memex-md init
 
 # 提交新生成的 .claude/ 目录
-git add .claude && git commit -m "Add claude-memex"
+git add .claude && git commit -m "Add memex-md"
 
 # 添加你的第一条知识条目
-npx claude-memex add decisions "本地选 SQLite 而非 Postgres"
+npx memex-md add decisions "本地选 SQLite 而非 Postgres"
 ```
 
 打开 `.claude/knowledge/decisions.md`,补充细节,提交。下次你启动 Claude 时,这条决定就已经在上下文里了。
@@ -75,58 +75,58 @@ npx claude-memex add decisions "本地选 SQLite 而非 Postgres"
 
 | 命令 | 作用 |
 |---|---|
-| `claude-memex init` | 创建 `.claude/knowledge/`、skill 和 hooks |
-| `claude-memex add <scope> "<标题>"` | 向某个 scope 追加一条新条目 |
-| `claude-memex list [scope]` | 查看知识库里有什么 |
-| `claude-memex search <查询>` | 在所有条目中搜索 |
-| `claude-memex validate` | 检查知识库是否完整 |
-| `claude-memex prune [--days N]` | 标记过期条目(默认 >180 天) |
+| `memex-md init` | 创建 `.claude/knowledge/`、skill 和 hooks |
+| `memex-md add <scope> "<标题>"` | 向某个 scope 追加一条新条目 |
+| `memex-md list [scope]` | 查看知识库里有什么 |
+| `memex-md search <查询>` | 在所有条目中搜索 |
+| `memex-md validate` | 检查知识库是否完整 |
+| `memex-md prune [--days N]` | 标记过期条目(默认 >180 天) |
 
 **Claude 驱动的命令(需要 `claude` CLI 在 PATH 中)**
 
 | 命令 | 作用 |
 |---|---|
-| `claude-memex draft [--staged\|--working\|--commit <sha>] [--write]` | 让 Claude 根据 git diff 提议要写入知识库的条目 |
-| `claude-memex ask "<问题>"` | 向 Claude 提问,仅基于你的知识库作答 |
+| `memex-md draft [--staged\|--working\|--commit <sha>] [--write]` | 让 Claude 根据 git diff 提议要写入知识库的条目 |
+| `memex-md ask "<问题>"` | 向 Claude 提问,仅基于你的知识库作答 |
 
 **自动化**
 
 | 命令 | 作用 |
 |---|---|
-| `claude-memex stale [--days N] [--brief]` | 列出过期条目(SessionStart hook 使用) |
-| `claude-memex check [--base <ref>] [--patterns <glob,glob>] [--strict]` | CI 检查:当敏感文件变更但知识库没有更新时失败 |
+| `memex-md stale [--days N] [--brief]` | 列出过期条目(SessionStart hook 使用) |
+| `memex-md check [--base <ref>] [--patterns <glob,glob>] [--strict]` | CI 检查:当敏感文件变更但知识库没有更新时失败 |
 
 ## 🤖 自动化,详解
 
-依赖自觉的记忆最终会腐烂。`claude-memex` 从四个方向关上这个缺口 —— 让你再也不用“记得去维护它”:
+依赖自觉的记忆最终会腐烂。`memex-md` 从四个方向关上这个缺口 —— 让你再也不用“记得去维护它”:
 
 ### `draft` —— 根据 diff 提议条目
 ```bash
 # 基于你最近一次提交
-npx claude-memex draft
+npx memex-md draft
 
 # 基于 staged 变更,并把提议直接写入文件
-npx claude-memex draft --staged --write
+npx memex-md draft --staged --write
 ```
 读取 diff,让 Claude 识别其中值得记录的内容(新决定、新模式、新的坑),要么打印提议,要么直接写入对应的 scope 文件。把 *"这个我应该记下来"* 变成一条命令级的反射动作。
 
 ### `ask` —— 不用 embeddings 的语义搜索
 ```bash
-npx claude-memex ask "为什么我们本地用 SQLite?"
+npx memex-md ask "为什么我们本地用 SQLite?"
 ```
 加载 `.claude/knowledge/` 下的所有 `.md` 文件,交给 Claude 回答 —— 严格限定在知识库范围内,并标注引用来源。不用向量数据库,不用维护索引。语义匹配由 Claude 完成。
 
 ### SessionStart hook —— 每次会话启动时的过期检查
 由 `init` 自动注册。在每次 Claude Code 会话开始时打印一行,标出超过 180 天的条目:
 ```
-[claude-memex] 3 knowledge entries older than 180 days — review for staleness: decisions.md:"Chose SQLite...", gotchas.md:"..."
+[memex-md] 3 knowledge entries older than 180 days — review for staleness: decisions.md:"Chose SQLite...", gotchas.md:"..."
 ```
 没有过期时完全安静。给你一个轻推,不是一堵墙。
 
 ### `check` —— CI 风格的校验
 ```bash
 # 在 GitHub Actions 或 pre-push hook 里:
-npx claude-memex check --base origin/main...HEAD --strict
+npx memex-md check --base origin/main...HEAD --strict
 ```
 当有人提交 migration / auth / schema / config 变更却没更新知识库时,让检查失败。`--patterns` 可以覆盖默认匹配规则。在 `--strict` 或 `CI=true` 时退出码为 `1`。
 
@@ -152,7 +152,7 @@ Claude Code 已经有三种记住东西的方式,每一种都有真实的限制:
 | 🧩 **自动记忆** | `~/.claude/projects/<slug>/memory/` | 只存在**一台机器**上。队友、CI、你的另一台笔记本全都是空白开始。无法在 PR 中审阅。 |
 | 📄 **`CLAUDE.md`** | 仓库内 | 随代码同步 ✅ —— 但它是一个为“稳定规则”设计的单一文件,不适合承载几十条持续演化的决定、模式和坑。 |
 
-`claude-memex` 正好填上这个缺口:一个**在仓库内**、**按 scope 组织**、**会自我更新**的知识库。由 git 管理版本,在 PR 中可审,跨机器一致。
+`memex-md` 正好填上这个缺口:一个**在仓库内**、**按 scope 组织**、**会自我更新**的知识库。由 git 管理版本,在 PR 中可审,跨机器一致。
 
 ### 实际带来的改变
 

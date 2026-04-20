@@ -14,7 +14,7 @@ export async function add(args: string[]): Promise<void> {
   const title = titleParts.join(" ").replace(/^["']|["']$/g, "").trim();
 
   if (!scope || !title) {
-    console.error('Usage: claude-memex add <scope> "<title>"');
+    console.error('Usage: memex-md add <scope> "<title>"');
     console.error(`Scopes: ${VALID_SCOPES.join(", ")}`);
     process.exit(1);
   }
@@ -27,7 +27,7 @@ export async function add(args: string[]): Promise<void> {
 
   const file = knowledgeFile(scope);
   if (!fs.existsSync(file)) {
-    console.error(`Missing ${file}. Run: claude-memex init`);
+    console.error(`Missing ${file}. Run: memex-md init`);
     process.exit(1);
   }
 

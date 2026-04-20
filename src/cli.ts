@@ -10,12 +10,12 @@ import { stale } from "./commands/stale";
 import { check } from "./commands/check";
 import { graph } from "./commands/graph";
 
-const VERSION = "0.2.0";
+const VERSION = "0.3.0";
 
-const HELP = `claude-memex ${VERSION} — in-repo knowledge base for Claude Code
+const HELP = `memex-md ${VERSION} — in-repo knowledge base for Claude Code
 
 Usage:
-  claude-memex <command> [args]
+  memex-md <command> [args]
 
 Core commands:
   init [--force]                   Scaffold .claude/knowledge/ + skill + hooks
@@ -50,11 +50,11 @@ Scopes:
   architecture, decisions, patterns, gotchas, glossary
 
 Examples:
-  claude-memex init
-  claude-memex add decisions "chose SQLite over Postgres for local dev"
-  claude-memex draft --staged --write
-  claude-memex ask "why did we pick SQLite locally?"
-  claude-memex check --base origin/main...HEAD --strict
+  memex-md init
+  memex-md add decisions "chose SQLite over Postgres for local dev"
+  memex-md draft --staged --write
+  memex-md ask "why did we pick SQLite locally?"
+  memex-md check --base origin/main...HEAD --strict
 
 Environment:
   CLAUDE_MEMEX_CLAUDE_BIN          Path to the claude binary (default: claude

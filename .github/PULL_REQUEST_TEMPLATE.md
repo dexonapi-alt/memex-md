@@ -1,5 +1,5 @@
 <!--
-  This is the PR template for contributions to claude-memex itself.
+  This is the PR template for contributions to memex-md itself.
   The template that init installs into USER repos lives at
   src/templates/github/PULL_REQUEST_TEMPLATE.md — don't confuse them.
 -->

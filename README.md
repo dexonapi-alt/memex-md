@@ -1,11 +1,11 @@
-# claude-memex
+# memex-md
 
 > **Give Claude Code a memory that lives in your repo — not your home folder.**
 
 **English** | [Español](README.es.md) | [Português (Brasil)](README.pt-BR.md) | [한국어](README.ko.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md)
 
 <p align="center">
-  <img src="./assets/claude-memex-banner.png" alt="claude-memex — your knowledge has been retained. Now Claude Code already knows it next time." />
+  <img src="./assets/memex-md-banner.png" alt="memex-md — your knowledge has been retained. Now Claude Code already knows it next time." />
 </p>
 
 ### 🛠 Built with
@@ -15,7 +15,7 @@
 ![npm](https://img.shields.io/badge/npm-CB3837?style=flat-square&logo=npm&logoColor=white)
 ![Zero deps](https://img.shields.io/badge/runtime_deps-0-success?style=flat-square)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)
-<!-- ![npm version](https://img.shields.io/npm/v/claude-memex?style=flat-square) — uncomment after publishing -->
+<!-- ![npm version](https://img.shields.io/npm/v/memex-md?style=flat-square) — uncomment after publishing -->
 
 ---
 
@@ -31,10 +31,10 @@ Claude **does** have a memory feature — but it's stored in your home folder (`
 
 ## ✨ The fix
 
-`claude-memex` gives your repo its own memory. One command sets up a folder where Claude writes down what it learns — and reads back at the start of every session:
+`memex-md` gives your repo its own memory. One command sets up a folder where Claude writes down what it learns — and reads back at the start of every session:
 
 ```bash
-npx claude-memex init
+npx memex-md init
 ```
 
 That creates:
@@ -61,14 +61,14 @@ Commit the folder. Claude reads it every session. That's it.
 
 ```bash
 # In any repo where you use Claude Code:
-npm install --save-dev claude-memex
-npx claude-memex init
+npm install --save-dev memex-md
+npx memex-md init
 
 # Commit the new .claude/ folder
-git add .claude && git commit -m "Add claude-memex"
+git add .claude && git commit -m "Add memex-md"
 
 # Add your first knowledge entry
-npx claude-memex add decisions "chose SQLite over Postgres for local dev"
+npx memex-md add decisions "chose SQLite over Postgres for local dev"
 ```
 
 Open `.claude/knowledge/decisions.md`, fill in the details, and commit. Next time you start Claude, that decision is already in context.
@@ -79,48 +79,48 @@ Open `.claude/knowledge/decisions.md`, fill in the details, and commit. Next tim
 
 | Command | What it does |
 |---|---|
-| `claude-memex init` | Set up `.claude/knowledge/`, the skill, and the hooks |
-| `claude-memex add <scope> "<title>"` | Append a new entry to a scope |
-| `claude-memex list [scope]` | Show what's in your knowledge base |
-| `claude-memex search <query>` | Grep across all entries |
-| `claude-memex validate` | Check everything is in order |
-| `claude-memex prune [--days N]` | Flag old entries (default: >180 days) |
+| `memex-md init` | Set up `.claude/knowledge/`, the skill, and the hooks |
+| `memex-md add <scope> "<title>"` | Append a new entry to a scope |
+| `memex-md list [scope]` | Show what's in your knowledge base |
+| `memex-md search <query>` | Grep across all entries |
+| `memex-md validate` | Check everything is in order |
+| `memex-md prune [--days N]` | Flag old entries (default: >180 days) |
 
 **Claude-powered (requires Claude Code CLI on PATH)**
 
 | Command | What it does |
 |---|---|
-| `claude-memex draft [--staged\|--working\|--commit <sha>] [--write]` | Ask Claude to propose knowledge entries from a git diff |
-| `claude-memex ask [--scope <s,s>] "<question>"` | Ask Claude a question answered strictly from your knowledge base (`--scope` narrows which files are loaded) |
+| `memex-md draft [--staged\|--working\|--commit <sha>] [--write]` | Ask Claude to propose knowledge entries from a git diff |
+| `memex-md ask [--scope <s,s>] "<question>"` | Ask Claude a question answered strictly from your knowledge base (`--scope` narrows which files are loaded) |
 
 **Automation**
 
 | Command | What it does |
 |---|---|
-| `claude-memex stale [--days N] [--brief]` | List stale entries (powers the SessionStart hook) |
-| `claude-memex check [--base <ref>\|--staged] [--patterns <glob,glob>] [--strict]` | CI / pre-commit check: fail if sensitive files changed without a knowledge update |
-| `claude-memex graph [--mermaid]` | Show supersedes/related relationships between entries |
+| `memex-md stale [--days N] [--brief]` | List stale entries (powers the SessionStart hook) |
+| `memex-md check [--base <ref>\|--staged] [--patterns <glob,glob>] [--strict]` | CI / pre-commit check: fail if sensitive files changed without a knowledge update |
+| `memex-md graph [--mermaid]` | Show supersedes/related relationships between entries |
 
 ## 🤖 Automation, explained
 
-Memory that relies on discipline is memory that decays. `claude-memex` closes the gap four different ways — so you never have to remember to maintain it:
+Memory that relies on discipline is memory that decays. `memex-md` closes the gap four different ways — so you never have to remember to maintain it:
 
 ### `draft` — propose entries from a diff
 ```bash
 # From your last commit
-npx claude-memex draft
+npx memex-md draft
 
 # From staged changes, and write the proposed entries into the files
-npx claude-memex draft --staged --write
+npx memex-md draft --staged --write
 ```
 Reads the diff, asks Claude to identify anything worth recording (new decisions, patterns, gotchas), and either prints the proposals or appends them directly to the right scope file. Turns *"I should remember this"* into a one-command reflex.
 
 ### `ask` — semantic search without embeddings
 ```bash
-npx claude-memex ask "why did we pick SQLite locally?"
+npx memex-md ask "why did we pick SQLite locally?"
 
 # For larger knowledge bases, narrow to specific scopes:
-npx claude-memex ask --scope decisions,gotchas "why did we pick SQLite locally?"
+npx memex-md ask --scope decisions,gotchas "why did we pick SQLite locally?"
 ```
 Loads every `.md` in `.claude/knowledge/` (or only the scopes you name) and asks Claude — scoped strictly to the knowledge base, with source citations. No vector DB, no index to maintain. Claude does the semantic matching.
 
@@ -129,17 +129,17 @@ Loads every `.md` in `.claude/knowledge/` (or only the scopes you name) and asks
 ### SessionStart hook — stale-check on every session
 Registered automatically by `init`. On every Claude Code session start, prints one line flagging entries older than 180 days:
 ```
-[claude-memex] 3 knowledge entries older than 180 days — review for staleness: decisions.md:"Chose SQLite...", gotchas.md:"..."
+[memex-md] 3 knowledge entries older than 180 days — review for staleness: decisions.md:"Chose SQLite...", gotchas.md:"..."
 ```
 Quiet when nothing is stale. Gives you a nudge, not a wall of text.
 
 ### `check` — CI-style validation
 ```bash
 # In GitHub Actions or pre-push hook:
-npx claude-memex check --base origin/main...HEAD --strict
+npx memex-md check --base origin/main...HEAD --strict
 
 # Or against staged changes (for pre-commit use):
-npx claude-memex check --staged
+npx memex-md check --staged
 ```
 Fails the check when someone lands a migration / auth / schema / config change without updating the knowledge base. Pattern list is overridable via `--patterns`. Exits `1` when `--strict` is set or when `CI=true`.
 
@@ -167,7 +167,7 @@ Entries can reference each other with two optional bullets:
   the parity gap.
 ```
 
-`claude-memex graph` walks those links and prints an ASCII view of the chains — who supersedes whom, who relates to whom, and any dangling references (ids that don't resolve). Pass `--mermaid` to emit a `graph TD` block you can paste into a GitHub Markdown comment and have it render.
+`memex-md graph` walks those links and prints an ASCII view of the chains — who supersedes whom, who relates to whom, and any dangling references (ids that don't resolve). Pass `--mermaid` to emit a `graph TD` block you can paste into a GitHub Markdown comment and have it render.
 
 This gives you a lightweight intelligence layer without pulling in a graph DB: plain Markdown conventions, walked at query time.
 
@@ -195,7 +195,7 @@ Claude Code already has three ways to remember things. Each one has a real limit
 | 🧩 **Auto-memory** | `~/.claude/projects/<slug>/memory/` | Lives on **one machine**. Teammates, CI, and your other laptop start with nothing. Not reviewable in PRs. |
 | 📄 **`CLAUDE.md`** | In your repo | Travels with the code ✅ — but it's a single file built for stable rules, not a growing archive of dozens of decisions, patterns, and gotchas. |
 
-`claude-memex` fills the gap: an **in-repo**, **scoped**, **self-updating** knowledge base. Git-tracked. PR-reviewable. The same on every machine.
+`memex-md` fills the gap: an **in-repo**, **scoped**, **self-updating** knowledge base. Git-tracked. PR-reviewable. The same on every machine.
 
 ### What actually changes
 
