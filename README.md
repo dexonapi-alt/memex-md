@@ -197,6 +197,7 @@ This gives you a lightweight intelligence layer without pulling in a graph DB: p
 | `/memex:preference "<text>"` | Classifies the preference (project-level → CLAUDE.md, user-level → auto-memory) and saves. |
 | `/memex:fix "<description>"` | Reads the current git diff, drafts a `gotchas.md` entry with Symptom / Root cause / Fix / Prevention, appends to `.claude/knowledge/gotchas.md`, and reads it back. |
 | `/memex:plan "<task>"` | Reads the knowledge base, scans the codebase, writes a full design plan to `.claude/plans/<date>-<slug>.md` (Goal / Context / Affected files / Migrations / Hooks / Dependencies / Risks / Implementation order), and updates a plans index. |
+| `/memex:apply-plan <filename-or-slug>` | Executes a plan step by step: confirms first, walks through Implementation order, stops on failure, marks `Status: implemented` on success, captures any new learnings back into `.claude/knowledge/`. |
 
 **Durability for teams:** these commands live in the repo (`.claude/commands/memex/*.md`), so every teammate who clones the repo gets the same shortcuts on first session.
 

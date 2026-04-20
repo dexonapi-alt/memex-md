@@ -96,7 +96,7 @@ Read back both `${PLAN_PATH}` and `.claude/plans/INDEX.md` so the on-disk state 
 
 ## Step 7 — Confirm to the user
 
-Tell the user: *"Plan saved to `${PLAN_PATH}`. Review the plan file and refine before implementation. Next: `/memex:apply-plan ${DATE}-${SLUG}` (coming in a future release) or implement manually referencing the plan."*
+Tell the user: *"Plan saved to `${PLAN_PATH}`. Review and refine before implementation. Next: `/memex:apply-plan ${DATE}-${SLUG}` to execute it step by step."*
 
 ## Rules
 

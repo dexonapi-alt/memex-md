@@ -93,6 +93,7 @@ After ANY \`/memex:*\` slash command runs, or after \`memex-md\` CLI is invoked 
 - \`/memex:preference "<text>"\` — classify and save a preference (project-level → CLAUDE.md; user-level → auto-memory).
 - \`/memex:fix "<description>"\` — capture a just-resolved bug as a \`gotchas.md\` entry (symptom / root cause / fix / prevention).
 - \`/memex:plan "<task>"\` — write a design plan under \`.claude/plans/<date>-<slug>.md\` with affected files, migrations, hooks, dependencies, risks, and an ordered implementation plan.
+- \`/memex:apply-plan <filename-or-slug>\` — execute a plan step by step, updating the plan's status on completion and capturing any new knowledge discovered during execution.
 
 Anything prefixed with \`/memex:\` touches the knowledge base, plans, or preferences — never your auto-memory.
 
@@ -183,7 +184,7 @@ export async function init(args: string[]): Promise<void> {
   console.log("Initialized memex-md:");
   console.log("  .claude/knowledge/                scaffolded");
   console.log("  .claude/skills/knowledge-update/  installed");
-  console.log("  .claude/commands/memex/           installed (3 slash commands)");
+  console.log("  .claude/commands/memex/           installed (4 slash commands)");
   console.log("  .claude/plans/                    scaffolded");
   console.log(
     `  .claude/hooks/pre-commit          ${hookInstalled ? "installed" : "skipped (exists)"}`

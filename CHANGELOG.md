@@ -6,6 +6,18 @@ All notable changes to `memex-md` are documented here. This project follows [Sem
 
 Nothing yet.
 
+## [0.5.1] — 2026-04-20
+
+### Added
+
+- **`/memex:apply-plan <filename-or-slug>`** — executes a plan previously written by `/memex:plan`, step by step: reads the plan + knowledge-base context, confirms before acting, walks through `## Implementation order`, stops on first failure, updates the plan's `Status` to `implemented (<date>)` on success, appends a `## Completion notes` section describing any deviations, and captures any new patterns/gotchas/decisions discovered during execution back into `.claude/knowledge/`. Closes the loop: `/memex:plan` → review → `/memex:apply-plan` → learnings back into KB.
+
+### Changed
+
+- `/memex:plan`'s final message now points at `/memex:apply-plan` as the natural next step (previously it said the command was "coming in a future release").
+- `init` output now reports 4 slash commands installed (was 3).
+- CLAUDE.md block's slash-command list now includes `/memex:apply-plan`.
+
 ## [0.5.0] — 2026-04-20
 
 The "slash commands" release. Adds a `/memex:*` namespace inside Claude Code so the knowledge base, plans, and preferences get a first-class entry point shared across the team.
@@ -116,7 +128,8 @@ The "team discipline" release. Project was renamed from `claude-memex` to `memex
 - Scaffolded `.claude/knowledge/` + `knowledge-update` skill + post-edit hook.
 - Zero runtime dependencies.
 
-[Unreleased]: https://github.com/dexonapi-alt/memex-md/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/dexonapi-alt/memex-md/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/dexonapi-alt/memex-md/releases/tag/v0.5.1
 [0.5.0]: https://github.com/dexonapi-alt/memex-md/releases/tag/v0.5.0
 [0.4.0]: https://github.com/dexonapi-alt/memex-md/releases/tag/v0.4.0
 [0.3.2]: https://github.com/dexonapi-alt/memex-md/releases/tag/v0.3.2

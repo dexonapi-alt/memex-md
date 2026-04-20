@@ -8,14 +8,14 @@ describe("init scaffolds slash commands + plans dir", () => {
   const dirs = [];
   after(() => dirs.forEach(cleanup));
 
-  test("installs /memex:preference, /memex:fix, /memex:plan", () => {
+  test("installs /memex:preference, /memex:fix, /memex:plan, /memex:apply-plan", () => {
     const dir = makeTempRepo();
     dirs.push(dir);
     const r = runCli(["init"], dir);
     assert.equal(r.exitCode, 0, r.stderr);
 
     const cmdDir = path.join(dir, ".claude/commands/memex");
-    for (const name of ["preference.md", "fix.md", "plan.md"]) {
+    for (const name of ["preference.md", "fix.md", "plan.md", "apply-plan.md"]) {
       const p = path.join(cmdDir, name);
       assert.ok(fs.existsSync(p), `expected ${p} to exist`);
       const content = fs.readFileSync(p, "utf8");
