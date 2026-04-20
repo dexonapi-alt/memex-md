@@ -103,6 +103,7 @@ Open `.claude/knowledge/decisions.md`, fill in the details, and commit. Next tim
 | `memex-md stale [--days N] [--brief]` | List stale entries (powers the SessionStart hook) |
 | `memex-md check [--base <ref>\|--staged] [--patterns <glob,glob>] [--strict]` | CI / pre-commit check: fail if sensitive files changed without a knowledge update |
 | `memex-md graph [--mermaid]` | Show supersedes/related relationships between entries |
+| `memex-md promote [--list\|--dry-run\|--all]` | Migrate repo-level facts accidentally stored in machine memory into `.claude/knowledge/` |
 
 ## 🤖 Automation, explained
 

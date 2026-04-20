@@ -11,7 +11,7 @@ import { check } from "./commands/check";
 import { graph } from "./commands/graph";
 import { promote } from "./commands/promote";
 
-const VERSION = "0.3.1";
+const VERSION = "0.3.2";
 
 const HELP = `memex-md ${VERSION} — in-repo knowledge base for Claude Code
 
