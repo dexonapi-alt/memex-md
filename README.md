@@ -194,11 +194,13 @@ Otherwise: this probably pays for itself within the first week.
 
 ## 🤝 Contributing
 
-PRs welcome. Please:
+PRs welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, PR guidelines, translation workflow, and how to report bugs.
+
+TL;DR:
 
 1. Keep each PR focused on one feature or fix.
 2. Run `npm run build` before pushing.
-3. If your change introduces a new pattern or decision, add an entry to your own `.claude/knowledge/` — we use this on ourselves.
+3. If your change introduces a new pattern or decision, add an entry to your own `.claude/knowledge/` — we eat our own dogfood.
 
 ## 📄 License
 
