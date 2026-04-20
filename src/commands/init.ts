@@ -40,14 +40,43 @@ const CLAUDE_MD_BLOCK = `${CLAUDE_MD_START}
 ## Project knowledge base (memex-md)
 
 This repo uses [memex-md](https://github.com/dexonapi-alt/memex-md) to persist
-project knowledge in git. Before answering questions or making non-trivial
-changes, consult \`.claude/knowledge/\`:
+project knowledge in git.
+
+### Memory routing rule — READ FIRST
+
+Before you use your auto-memory tool (which writes to \`~/.claude/projects/.../memory/\`
+on the local machine), classify the fact:
+
+| Fact type | Where to save |
+|---|---|
+| **About this repo** (conventions, decisions, patterns, gotchas, domain terms, team-style rules) | \`.claude/knowledge/<scope>.md\` — edit the file directly. DO NOT use auto-memory. |
+| **About the user across all projects** (shell preference, editor, timezone, working style) | Auto-memory is correct. |
+
+**If unsure, default to \`.claude/knowledge/\`.** Auto-memory is per-machine and
+doesn't travel with the repo; the knowledge base is git-tracked, PR-reviewable,
+and shared with teammates.
+
+**Always state out loud where you're saving.** For example:
+
+> *"Saving this to \`.claude/knowledge/patterns.md\` (repo-level rule)."*
+>
+> *"Saving this to machine memory (user-level preference)."*
+
+Never hide which system fired. If you realize mid-flight that you put a fact in
+the wrong place, say so and move it.
+
+### Scopes
+
+Before answering questions or making non-trivial changes, consult
+\`.claude/knowledge/\`:
 
 - \`architecture.md\` — system shape, services, data flow
 - \`decisions.md\` — non-obvious choices and their rationale
 - \`patterns.md\` — reusable code patterns in this codebase
 - \`gotchas.md\` — past bugs and non-obvious constraints
 - \`glossary.md\` — project-specific terminology
+
+### How to update
 
 When work reveals a new decision, pattern, or gotcha, record it:
 
@@ -62,6 +91,8 @@ npx memex-md draft --staged --write
 \`\`\`
 
 See \`.claude/skills/knowledge-update/SKILL.md\` for full triggers and conventions.
+Run \`npx memex-md promote\` to move any repo-level facts already stored in
+machine memory into \`.claude/knowledge/\`.
 ${CLAUDE_MD_END}`;
 
 function escapeRegex(s: string): string {

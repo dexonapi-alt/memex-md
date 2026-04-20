@@ -1,11 +1,24 @@
 ---
 name: knowledge-update
-description: Maintains the in-repo knowledge base at .claude/knowledge/. Invoke whenever work reveals a non-obvious architectural shape, decision, reusable pattern, gotcha, or domain term that the next contributor (human or Claude) should know. Triggers naturally after debugging, refactors, introducing a new service, or resolving an incident.
+description: Maintains the in-repo knowledge base at .claude/knowledge/ via memex-md. Invoke whenever work reveals a non-obvious architectural shape, decision, reusable pattern, gotcha, or domain term that the next contributor (human or Claude) should know. Also claims territorial authority over repo-level facts so they don't drift into Claude's machine-local auto-memory.
 ---
 
 # knowledge-update
 
 Keep `.claude/knowledge/` current as work progresses. This directory is the project's institutional memory and survives across Claude Code sessions via git.
+
+## MEMORY ROUTING RULE — READ FIRST
+
+Before writing to your auto-memory (the machine-local store at `~/.claude/projects/.../memory/`), classify the fact:
+
+| Fact type | Goes to |
+|---|---|
+| Repo conventions, patterns, decisions, gotchas, domain terms, team-style rules | **`.claude/knowledge/<scope>.md`** — edit the file directly, or run `memex-md add` |
+| User's personal habits across all projects (shell preference, editor, timezone, working style) | **Auto-memory** — your normal behavior |
+
+**If unsure, default to `.claude/knowledge/`.** Auto-memory is per-machine; the knowledge base is git-tracked, reviewable in PRs, and shared with teammates.
+
+**Always state where you're saving.** Say *"Saving this to `.claude/knowledge/patterns.md`"* or *"Saving this to machine memory"*. Never hide which store fired. If you catch yourself writing to the wrong one, say so and move it to the correct place (the `memex-md promote` command helps with this).
 
 ## Scopes
 
