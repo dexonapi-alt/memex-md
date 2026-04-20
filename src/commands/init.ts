@@ -3,6 +3,7 @@ import * as path from "node:path";
 import {
   claudeDir,
   knowledgeDir,
+  repoRoot,
   settingsPath,
   skillDir,
   templatesRoot,
@@ -55,19 +56,62 @@ export async function init(args: string[]): Promise<void> {
   copyDir(path.join(templates, "knowledge"), knowledgeDir());
   copyDir(path.join(templates, "skills", "knowledge-update"), skillDir());
 
+  const hookInstalled = installPreCommitHook(templates, force);
+  const prTemplateInstalled = installPrTemplate(templates, force);
+
   mergeHooks();
 
   console.log("Initialized claude-memex:");
   console.log("  .claude/knowledge/                scaffolded");
   console.log("  .claude/skills/knowledge-update/  installed");
+  console.log(
+    `  .claude/hooks/pre-commit          ${hookInstalled ? "installed" : "skipped (exists)"}`
+  );
+  console.log(
+    `  .github/PULL_REQUEST_TEMPLATE.md  ${prTemplateInstalled ? "installed" : "skipped (exists)"}`
+  );
   console.log("  .claude/settings.json             hooks registered:");
   console.log("    - PostToolUse  (knowledge-update reminder)");
   console.log("    - SessionStart (stale-entry flag)");
   console.log("");
   console.log("Next:");
-  console.log("  1. git add .claude/ && commit");
+  console.log("  1. git add .claude/ .github/ && commit");
   console.log("  2. Edit .claude/knowledge/INDEX.md to taste");
   console.log('  3. Try: claude-memex add decisions "your first decision"');
+  if (hookInstalled) {
+    console.log(
+      "  4. (Optional) Activate the pre-commit hook: git config core.hooksPath .claude/hooks"
+    );
+  }
+}
+
+function installPreCommitHook(templates: string, force: boolean): boolean {
+  const dest = path.join(claudeDir(), "hooks", "pre-commit");
+  if (fs.existsSync(dest) && !force) return false;
+
+  const src = path.join(templates, "hooks", "pre-commit");
+  if (!fs.existsSync(src)) return false;
+
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  fs.copyFileSync(src, dest);
+  try {
+    fs.chmodSync(dest, 0o755);
+  } catch {
+    // Windows chmod may fail; hook still runs via sh/Git Bash.
+  }
+  return true;
+}
+
+function installPrTemplate(templates: string, force: boolean): boolean {
+  const dest = path.join(repoRoot(), ".github", "PULL_REQUEST_TEMPLATE.md");
+  if (fs.existsSync(dest) && !force) return false;
+
+  const src = path.join(templates, "github", "PULL_REQUEST_TEMPLATE.md");
+  if (!fs.existsSync(src)) return false;
+
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  fs.copyFileSync(src, dest);
+  return true;
 }
 
 function mergeHooks(): void {
@@ -75,7 +119,6 @@ function mergeHooks(): void {
   const existing = readJson<Settings>(p) ?? {};
   existing.hooks ??= {};
 
-  // PostToolUse — knowledge-update reminder after edits
   existing.hooks.PostToolUse ??= [];
   if (
     !existing.hooks.PostToolUse.some((h) =>
@@ -88,7 +131,6 @@ function mergeHooks(): void {
     });
   }
 
-  // SessionStart — flag stale entries at session start
   existing.hooks.SessionStart ??= [];
   if (
     !existing.hooks.SessionStart.some((h) =>

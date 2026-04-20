@@ -1,4 +1,8 @@
-import { changedFilesInRange, isGitRepo } from "../lib/git";
+import {
+  changedFilesInRange,
+  changedFilesStaged,
+  isGitRepo,
+} from "../lib/git";
 import { matchesAny } from "../lib/glob";
 import { requireKnowledgeBase } from "../lib/paths";
 
@@ -22,6 +26,7 @@ function parseArgs(args: string[]): {
   base: string;
   patterns: string[];
   strict: boolean;
+  staged: boolean;
 } {
   const baseIdx = args.indexOf("--base");
   const base =
@@ -34,7 +39,8 @@ function parseArgs(args: string[]): {
       : DEFAULT_SENSITIVE;
 
   const strict = args.includes("--strict");
-  return { base, patterns, strict };
+  const staged = args.includes("--staged");
+  return { base, patterns, strict, staged };
 }
 
 export async function check(args: string[]): Promise<void> {
@@ -44,21 +50,24 @@ export async function check(args: string[]): Promise<void> {
     process.exit(2);
   }
 
-  const { base, patterns, strict } = parseArgs(args);
+  const { base, patterns, strict, staged } = parseArgs(args);
+  const scope = staged ? "staged changes" : base;
 
   let files: string[];
   try {
-    files = changedFilesInRange(base);
+    files = staged ? changedFilesStaged() : changedFilesInRange(base);
   } catch (err) {
     console.error(err instanceof Error ? err.message : err);
-    console.error(
-      `Tip: ensure ${base.split("...")[0] || base} is fetched locally.`
-    );
+    if (!staged) {
+      console.error(
+        `Tip: ensure ${base.split("...")[0] || base} is fetched locally.`
+      );
+    }
     process.exit(2);
   }
 
   if (files.length === 0) {
-    console.log(`No changes in ${base}.`);
+    console.log(`No changes in ${scope}.`);
     return;
   }
 
@@ -68,11 +77,11 @@ export async function check(args: string[]): Promise<void> {
   );
 
   if (sensitiveChanged.length === 0) {
-    console.log(`No sensitive files changed in ${base}. OK.`);
+    console.log(`No sensitive files changed in ${scope}. OK.`);
     return;
   }
 
-  console.log(`Sensitive files changed in ${base}:`);
+  console.log(`Sensitive files changed in ${scope}:`);
   for (const f of sensitiveChanged) console.log(`  ${f}`);
 
   if (knowledgeChanged.length > 0) {
@@ -88,7 +97,7 @@ export async function check(args: string[]): Promise<void> {
       `(typically decisions.md or gotchas.md).`
   );
   console.log(
-    `\nFix: run \`claude-memex draft --from-commit <sha>\` or add entries manually.`
+    `\nFix: run \`claude-memex draft ${staged ? "--staged" : "--from-commit <sha>"} --write\` or add entries manually.`
   );
 
   if (strict || process.env.CI) {

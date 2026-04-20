@@ -98,7 +98,7 @@ Open `.claude/knowledge/decisions.md`, fill in the details, and commit. Next tim
 | Command | What it does |
 |---|---|
 | `claude-memex stale [--days N] [--brief]` | List stale entries (powers the SessionStart hook) |
-| `claude-memex check [--base <ref>] [--patterns <glob,glob>] [--strict]` | CI check: fail if sensitive files changed without a knowledge update |
+| `claude-memex check [--base <ref>\|--staged] [--patterns <glob,glob>] [--strict]` | CI / pre-commit check: fail if sensitive files changed without a knowledge update |
 
 ## 🤖 Automation, explained
 
@@ -131,8 +131,22 @@ Quiet when nothing is stale. Gives you a nudge, not a wall of text.
 ```bash
 # In GitHub Actions or pre-push hook:
 npx claude-memex check --base origin/main...HEAD --strict
+
+# Or against staged changes (for pre-commit use):
+npx claude-memex check --staged
 ```
 Fails the check when someone lands a migration / auth / schema / config change without updating the knowledge base. Pattern list is overridable via `--patterns`. Exits `1` when `--strict` is set or when `CI=true`.
+
+### Pre-commit hook + PR template (installed by `init`)
+`init` also scaffolds:
+
+- `.claude/hooks/pre-commit` — a tiny shell script that runs `check --staged` and prints a reminder when sensitive files change without a knowledge update. **Does not block commits** — enforcement belongs in CI. Activate per clone:
+  ```bash
+  git config core.hooksPath .claude/hooks
+  ```
+- `.github/PULL_REQUEST_TEMPLATE.md` — a checklist prompting contributors to record decisions / patterns / gotchas introduced by the PR (or explicitly mark N/A). GitHub auto-applies it to new PRs.
+
+Both are regular files in your repo — review and customise them like any other template.
 
 ## 🗂 Scopes
 
