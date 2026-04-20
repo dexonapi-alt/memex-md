@@ -9,5 +9,6 @@ export { ask } from "./commands/ask";
 export { stale } from "./commands/stale";
 export { check } from "./commands/check";
 export { graph } from "./commands/graph";
+export { promote } from "./commands/promote";
 export { VALID_SCOPES } from "./lib/paths";
 export type { Scope } from "./lib/paths";

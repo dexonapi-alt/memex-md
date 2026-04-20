@@ -9,6 +9,7 @@ import { ask } from "./commands/ask";
 import { stale } from "./commands/stale";
 import { check } from "./commands/check";
 import { graph } from "./commands/graph";
+import { promote } from "./commands/promote";
 
 const VERSION = "0.3.1";
 
@@ -41,6 +42,10 @@ Automation:
   graph [--mermaid]                Show supersedes/related relationships
                                    between entries (ASCII by default, Mermaid
                                    with --mermaid for GitHub rendering)
+  promote [--list|--dry-run|--all] Migrate repo-level facts accidentally stored
+                                   in Claude's machine memory
+                                   (~/.claude/projects/.../memory/) into
+                                   .claude/knowledge/. Interactive by default.
 
 Misc:
   help                             Show this message
@@ -98,6 +103,9 @@ async function main(): Promise<void> {
       break;
     case "graph":
       await graph(rest);
+      break;
+    case "promote":
+      await promote(rest);
       break;
     case "version":
     case "--version":
