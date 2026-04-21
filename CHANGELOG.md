@@ -6,6 +6,26 @@ All notable changes to `memex-md` are documented here. This project follows [Sem
 
 Nothing yet.
 
+## [0.6.2] — 2026-04-20
+
+### Fixed
+
+- **Critical data-loss bug in `init --force`.** Prior versions unconditionally overwrote the entire `.claude/knowledge/` directory when `--force` was used, wiping all user-authored entries in `decisions.md`, `patterns.md`, `gotchas.md`, `architecture.md`, `glossary.md`, and `INDEX.md` — replacing them with empty templates. A user running `npm install memex-md@latest && npx memex-md init --force` to pick up a new release would lose every entry they'd added.
+- `init --force` now preserves user-authored files under `.claude/knowledge/` and `.claude/plans/` — only **missing** files are created; existing files are never touched.
+- Package-managed files (`commands/memex/*.md`, `skills/knowledge-update/SKILL.md`, `hooks/pre-commit`, `PULL_REQUEST_TEMPLATE.md`, `CLAUDE.md` block) are still refreshed by `--force` as before — those are memex-md's own templates, not user data.
+- Ran `init` without `--force` on an existing install used to error out (*".claude/knowledge/ already exists"*). That gate was protecting against the same data-loss bug; with the bug fixed, the error is unnecessary. `init` on an existing install is now a safe no-op that adds any missing files.
+
+### Added
+
+- 2 new regression tests in `test/init.test.js`:
+  - `init --force preserves existing knowledge entries (no data loss)` — seeds real-shape entries into `decisions.md` and `gotchas.md`, runs `init --force`, asserts bytes-exact equality before/after.
+  - `init --force still refreshes package-managed files` — confirms the complementary behaviour: `--force` DOES restore slash command templates to the shipped version (overwrites user hacks to package files).
+
+### Changed
+
+- `installPlansSeed` no longer accepts `--force` — the plans `INDEX.md` accumulates `/memex:plan` entries over time and is user data. It's now seeded only when missing.
+- Removed the *".claude/knowledge/ already exists"* error. Running `init` on an existing install is intentional and safe.
+
 ## [0.6.1] — 2026-04-20
 
 Course-correction release. v0.6.0 added `/memex:approve-plan` and an `approved` state to the plan lifecycle — but that duplicates what PR review already provides for free and inserts a ceremony most teams don't need. Rolling it back.
@@ -187,7 +207,8 @@ The "team discipline" release. Project was renamed from `claude-memex` to `memex
 - Scaffolded `.claude/knowledge/` + `knowledge-update` skill + post-edit hook.
 - Zero runtime dependencies.
 
-[Unreleased]: https://github.com/dexonapi-alt/memex-md/compare/v0.6.1...HEAD
+[Unreleased]: https://github.com/dexonapi-alt/memex-md/compare/v0.6.2...HEAD
+[0.6.2]: https://github.com/dexonapi-alt/memex-md/releases/tag/v0.6.2
 [0.6.1]: https://github.com/dexonapi-alt/memex-md/releases/tag/v0.6.1
 [0.6.0]: https://github.com/dexonapi-alt/memex-md/releases/tag/v0.6.0
 [0.5.2]: https://github.com/dexonapi-alt/memex-md/releases/tag/v0.5.2

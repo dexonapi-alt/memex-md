@@ -10,7 +10,7 @@ import {
   skillDir,
   templatesRoot,
 } from "../lib/paths";
-import { copyDir, readJson, writeJson } from "../lib/fs-utils";
+import { copyDir, copyDirMissing, readJson, writeJson } from "../lib/fs-utils";
 
 interface HookEntry {
   matcher?: string;
@@ -157,13 +157,6 @@ export async function init(args: string[]): Promise<void> {
 
   fs.mkdirSync(claudeDir(), { recursive: true });
 
-  if (fs.existsSync(knowledgeDir()) && !force) {
-    console.error(
-      ".claude/knowledge/ already exists. Use --force to overwrite template files (existing content is preserved only for files not in templates)."
-    );
-    process.exit(1);
-  }
-
   const templates = templatesRoot();
   if (!fs.existsSync(templates)) {
     console.error(
@@ -172,10 +165,18 @@ export async function init(args: string[]): Promise<void> {
     process.exit(1);
   }
 
-  copyDir(path.join(templates, "knowledge"), knowledgeDir());
-  copyDir(path.join(templates, "skills", "knowledge-update"), skillDir());
-  copyDir(path.join(templates, "commands", "memex"), commandsDir());
-  installPlansSeed(templates, force);
+  // User-data folders: NEVER overwrite. Existing scope files and plans
+  // contain authored content. Only add missing files (first install, or
+  // new scopes shipped in an upgrade).
+  copyDirMissing(path.join(templates, "knowledge"), knowledgeDir());
+
+  // Package-managed folders: --force refreshes them over existing versions;
+  // without --force we still copy missing ones (so upgrades pick up new
+  // commands/skills).
+  const copyPackage = force ? copyDir : copyDirMissing;
+  copyPackage(path.join(templates, "skills", "knowledge-update"), skillDir());
+  copyPackage(path.join(templates, "commands", "memex"), commandsDir());
+  installPlansSeed(templates);
 
   const hookInstalled = installPreCommitHook(templates, force);
   const prTemplateInstalled = installPrTemplate(templates, force);
@@ -242,9 +243,11 @@ function installPreCommitHook(templates: string, force: boolean): boolean {
   return true;
 }
 
-function installPlansSeed(templates: string, force: boolean): void {
+function installPlansSeed(templates: string): void {
   const dest = path.join(plansDir(), "INDEX.md");
-  if (fs.existsSync(dest) && !force) return;
+  // Plans INDEX is user data — it grows as /memex:plan adds entries.
+  // Never overwrite (even with --force). Only seed when missing.
+  if (fs.existsSync(dest)) return;
   const src = path.join(templates, "plans", "INDEX.md");
   if (!fs.existsSync(src)) return;
   fs.mkdirSync(path.dirname(dest), { recursive: true });
