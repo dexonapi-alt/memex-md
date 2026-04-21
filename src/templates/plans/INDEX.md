@@ -4,10 +4,23 @@ Managed by `memex-md`. Each plan is a design artifact written **before** impleme
 
 Create plans via the `/memex:plan "<task>"` slash command inside Claude Code. Plans live at `.claude/plans/<YYYY-MM-DD>-<slug>.md`.
 
+## Lifecycle
+
+Every plan flows through these states:
+
+1. **draft** — just created by `/memex:plan`. Not yet reviewed.
+2. **approved** — accepted by the team (usually via PR review). Set by `/memex:approve-plan <slug>`.
+3. **in-progress** — `/memex:apply-plan` has started walking the steps.
+4. **implemented** — all steps completed, plan archived to `.claude/plans/applied/`.
+
+Line format in this index includes the current status and optional assignee:
+
+    - [<file>](<file>) — <description>  *(status)*  [— assigned: @username]
+
 ## Plans
 
-<!-- `/memex:plan` appends new (active, draft) plans here. Most recent first. -->
+<!-- Active plans. `/memex:plan` prepends new entries; /memex:approve-plan and /memex:apply-plan update their status annotations in place. -->
 
 ## Applied
 
-<!-- `/memex:apply-plan` moves completed plans here after the Implementation order has run and `Status` is flipped to `implemented (<date>)`. The underlying files live in `.claude/plans/applied/` and preserve history via `git mv`. -->
+<!-- Completed plans. `/memex:apply-plan` moves the plan file to .claude/plans/applied/ (via git mv to preserve history) and moves its INDEX entry here on completion. Format: - [applied/<file>](applied/<file>) — <description> *(implemented <date>)*. -->

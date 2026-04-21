@@ -4,6 +4,14 @@ description: Create a detailed plan file under .claude/plans/ using knowledge ba
 
 The user wants a plan for: $ARGUMENTS
 
+## Step 0 — Parse flags
+
+Scan `$ARGUMENTS` for optional flags and extract them before treating the rest as the plan task:
+
+- `--for <github-username>` — marks the plan as assigned. Remember the username (without the leading `@` if present) for Steps 4 and 5.
+
+Whatever remains after flag extraction is the plan task.
+
 ## Step 1 — Load context from the knowledge base
 
 Read the scope files that might be relevant:
@@ -36,6 +44,7 @@ Create `${PLAN_PATH}` with this exact structure:
 
     - **Created:** <YYYY-MM-DD>
     - **Status:** draft
+    - **Assignee:** @<github-username>  (only if --for was provided; otherwise omit this line)
     - **Scope:** <one sentence on what this covers>
 
     ## Goal
@@ -88,7 +97,9 @@ Ensure `.claude/plans/INDEX.md` exists. If not, create it with:
 
 Then append (or insert at the top of the `## Plans` list):
 
-    - [<DATE>-<SLUG>.md](<DATE>-<SLUG>.md) — <short description of goal>
+    - [<DATE>-<SLUG>.md](<DATE>-<SLUG>.md) — <short description of goal>  *(draft)*  [— assigned: @<username>]
+
+The parenthetical `*(draft)*` carries the current status so the INDEX reflects state without re-reading each plan file. Include the `— assigned: @<username>` suffix only if `--for` was provided.
 
 ## Step 6 — Verify
 
@@ -96,7 +107,9 @@ Read back both `${PLAN_PATH}` and `.claude/plans/INDEX.md` so the on-disk state 
 
 ## Step 7 — Confirm to the user
 
-Tell the user: *"Plan saved to `${PLAN_PATH}`. Review and refine before implementation. Next: `/memex:apply-plan ${DATE}-${SLUG}` to execute it step by step."*
+Tell the user: *"Plan saved to `${PLAN_PATH}` (status: draft). Review and refine. Next: merge the plan file via PR, run `/memex:approve-plan ${DATE}-${SLUG}` to mark it approved, then anyone can run `/memex:apply-plan ${DATE}-${SLUG}` to execute it."*
+
+If `--for <username>` was provided, also say: *"Assigned to @<username>."*
 
 ## Rules
 

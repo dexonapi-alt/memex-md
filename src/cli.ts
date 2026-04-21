@@ -12,7 +12,7 @@ import { graph } from "./commands/graph";
 import { promote } from "./commands/promote";
 import { preference } from "./commands/preference";
 
-const VERSION = "0.5.2";
+const VERSION = "0.6.0";
 
 const HELP = `memex-md ${VERSION} — in-repo knowledge base for Claude Code
 

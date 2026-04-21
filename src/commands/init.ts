@@ -99,10 +99,11 @@ Capture:
 - \`/memex:arch "<text>"\` — record a system-shape fact in \`architecture.md\` (prefers diagram + boundary over prose).
 - \`/memex:term "<term>: <definition>"\` — record a domain term in \`glossary.md\`.
 
-Plans:
+Plans (lifecycle: draft → approved → in-progress → implemented):
 
-- \`/memex:plan "<task>"\` — write a design plan under \`.claude/plans/<date>-<slug>.md\` with affected files, migrations, hooks, dependencies, risks, and an ordered implementation plan.
-- \`/memex:apply-plan <filename-or-slug>\` — execute a plan step by step, update \`Status: implemented\`, capture any new learnings back into \`.claude/knowledge/\`, then \`git mv\` the plan to \`.claude/plans/applied/\` to keep the active list short.
+- \`/memex:plan [--for <github-username>] "<task>"\` — write a design plan under \`.claude/plans/<date>-<slug>.md\` with affected files, migrations, hooks, risks, and an ordered implementation plan. Optionally assigns to a teammate. Starts as \`draft\`.
+- \`/memex:approve-plan <filename-or-slug>\` — flip \`draft\` → \`approved (<date>)\` after PR review or team sign-off. Any team member can then execute.
+- \`/memex:apply-plan <filename-or-slug>\` — execute the plan step by step: marks \`in-progress\` on start, \`implemented (<date>)\` on success, captures new learnings back into \`.claude/knowledge/\`, then \`git mv\` the plan to \`.claude/plans/applied/\`.
 
 Anything prefixed with \`/memex:\` touches the knowledge base, plans, or preferences — never your auto-memory.
 
@@ -193,7 +194,7 @@ export async function init(args: string[]): Promise<void> {
   console.log("Initialized memex-md:");
   console.log("  .claude/knowledge/                scaffolded");
   console.log("  .claude/skills/knowledge-update/  installed");
-  console.log("  .claude/commands/memex/           installed (8 slash commands)");
+  console.log("  .claude/commands/memex/           installed (9 slash commands)");
   console.log("  .claude/plans/                    scaffolded");
   console.log(
     `  .claude/hooks/pre-commit          ${hookInstalled ? "installed" : "skipped (exists)"}`

@@ -8,7 +8,7 @@ describe("init scaffolds slash commands + plans dir", () => {
   const dirs = [];
   after(() => dirs.forEach(cleanup));
 
-  test("installs all 8 /memex:* slash commands", () => {
+  test("installs all 9 /memex:* slash commands", () => {
     const dir = makeTempRepo();
     dirs.push(dir);
     const r = runCli(["init"], dir);
@@ -19,6 +19,7 @@ describe("init scaffolds slash commands + plans dir", () => {
       "preference.md",
       "fix.md",
       "plan.md",
+      "approve-plan.md",
       "apply-plan.md",
       "decide.md",
       "pattern.md",
@@ -32,6 +33,44 @@ describe("init scaffolds slash commands + plans dir", () => {
       assert.match(content, /^---/m, `${name} should have frontmatter`);
       assert.match(content, /\$ARGUMENTS/, `${name} should reference $ARGUMENTS`);
     }
+  });
+
+  test("plan lifecycle templates describe the full state machine", () => {
+    const dir = makeTempRepo();
+    dirs.push(dir);
+    runCli(["init"], dir);
+    const cmdDir = path.join(dir, ".claude/commands/memex");
+
+    const planMd = fs.readFileSync(path.join(cmdDir, "plan.md"), "utf8");
+    assert.match(planMd, /--for <github-username>/);
+    assert.match(planMd, /Status:\*\*\s*draft/);
+    assert.match(planMd, /Assignee:/);
+
+    const approveMd = fs.readFileSync(
+      path.join(cmdDir, "approve-plan.md"),
+      "utf8"
+    );
+    assert.match(approveMd, /draft/);
+    assert.match(approveMd, /approved/);
+
+    const applyMd = fs.readFileSync(path.join(cmdDir, "apply-plan.md"), "utf8");
+    assert.match(applyMd, /in-progress/);
+    assert.match(applyMd, /implemented/);
+  });
+
+  test("plans INDEX seed documents the full lifecycle vocabulary", () => {
+    const dir = makeTempRepo();
+    dirs.push(dir);
+    runCli(["init"], dir);
+    const indexMd = fs.readFileSync(
+      path.join(dir, ".claude/plans/INDEX.md"),
+      "utf8"
+    );
+    assert.match(indexMd, /draft/);
+    assert.match(indexMd, /approved/);
+    assert.match(indexMd, /in-progress/);
+    assert.match(indexMd, /implemented/);
+    assert.match(indexMd, /## Lifecycle/);
   });
 
   test("plans INDEX seed has both ## Plans and ## Applied sections", () => {

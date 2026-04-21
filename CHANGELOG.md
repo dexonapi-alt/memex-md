@@ -6,6 +6,26 @@ All notable changes to `memex-md` are documented here. This project follows [Sem
 
 Nothing yet.
 
+## [0.6.0] — 2026-04-20
+
+The "team coordination" release. Plans now have a lifecycle state machine and can be assigned to teammates.
+
+### Added
+
+- **Plan assignment** — `/memex:plan "<task>" --for <github-username>` records `- **Assignee:** @<username>` in the plan metadata and `— assigned: @<username>` in the INDEX entry. Assignment is informational: anyone can still execute, but the assignee is the intended owner.
+- **`/memex:approve-plan <slug>`** — new slash command that flips a plan's `Status` from `draft` to `approved (<date>)`, typically run by a director/lead after the plan PR is reviewed and merged. Refuses to operate on plans in `in-progress` or `implemented` state without explicit user confirmation.
+- **Status state machine: `draft → approved → in-progress → implemented`**
+  - `/memex:plan` creates plans with `Status: draft`.
+  - `/memex:approve-plan` flips `draft → approved (<date>)`.
+  - `/memex:apply-plan` now checks the status first: warns if `draft`, refuses if `implemented`, asks about resume vs restart if `in-progress`; flips to `in-progress` when execution starts; flips to `implemented (<date>)` on successful completion.
+  - INDEX annotation uses the inline format `*(status)*` alongside the plan entry so state is visible without opening each file.
+
+### Changed
+
+- `init` scaffolds 9 slash commands (was 8) — the new `approve-plan.md` joins the existing eight.
+- Plans `INDEX.md` seed now documents the full lifecycle under a `## Lifecycle` section and shows the annotation format for INDEX entries.
+- Apply-plan workflow now includes an explicit status-check step before confirmation — team members see whether a plan has been approved before investing tool calls in execution.
+
 ## [0.5.2] — 2026-04-20
 
 ### Added
@@ -144,7 +164,8 @@ The "team discipline" release. Project was renamed from `claude-memex` to `memex
 - Scaffolded `.claude/knowledge/` + `knowledge-update` skill + post-edit hook.
 - Zero runtime dependencies.
 
-[Unreleased]: https://github.com/dexonapi-alt/memex-md/compare/v0.5.2...HEAD
+[Unreleased]: https://github.com/dexonapi-alt/memex-md/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/dexonapi-alt/memex-md/releases/tag/v0.6.0
 [0.5.2]: https://github.com/dexonapi-alt/memex-md/releases/tag/v0.5.2
 [0.5.1]: https://github.com/dexonapi-alt/memex-md/releases/tag/v0.5.1
 [0.5.0]: https://github.com/dexonapi-alt/memex-md/releases/tag/v0.5.0

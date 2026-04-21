@@ -17,13 +17,32 @@ If `$ARGUMENTS` is a slug, date, or partial match:
 
 Read the full plan file into context. Also read `.claude/knowledge/INDEX.md` and any scope files cited in the plan's *Context from knowledge base* section.
 
-## Step 2 — Confirm before executing
+## Step 2 — Check plan status
+
+Look at the plan's `Status` field:
+
+- `draft`: the plan hasn't been reviewed yet. Warn the user — *"This plan is still a draft (not approved via `/memex:approve-plan`). On teams, plans usually pass PR review first. Proceed anyway?"* Only continue if the user confirms.
+- `approved (<date>)`: proceed.
+- `in-progress`: someone has already started this plan (possibly the same user recovering from a halt). Ask: *"Status says `in-progress` — resume from the top, or did a previous run stop mid-way?"* Proceed per the user's answer.
+- `implemented (<date>)`: stop. The plan is already done. Suggest `/memex:plan` for a follow-up.
+
+## Step 2.5 — Confirm before executing
 
 Briefly restate to the user:
 
-> *"Ready to apply plan **<title>** (`<filename>`). Steps: N. Risks: <summary>. Proceed?"*
+> *"Ready to apply plan **<title>** (`<filename>`). Status: <current status>. Steps: N. Risks: <summary>. Proceed?"*
 
 If the user declines or wants changes, STOP. Do not modify any files.
+
+## Step 2.75 — Mark in-progress
+
+Before touching any code, update the plan file's status via your Edit tool:
+
+- Change `- **Status:** <current>` to `- **Status:** in-progress`
+
+Also update `.claude/plans/INDEX.md` — change the plan's inline annotation to `*(in-progress)*`.
+
+This way, if execution halts or you're on a team, everyone can see work is underway.
 
 ## Step 3 — Execute each step in order
 
@@ -36,11 +55,11 @@ For each item under the plan's `## Implementation order` section:
 
 Do NOT improvise beyond what the plan specifies. If a step is ambiguous, ask the user before proceeding.
 
-## Step 4 — Update the plan file
+## Step 4 — Update the plan file on completion
 
 When all steps complete successfully, use your Edit tool on the plan file:
 
-- Change `- **Status:** draft` to `- **Status:** implemented (<YYYY-MM-DD>)`.
+- Change `- **Status:** in-progress` to `- **Status:** implemented (<YYYY-MM-DD>)`.
 - Append (at the end of the file) a `## Completion notes` section describing any deviations from the original plan, surprises encountered, or follow-ups not in scope.
 
 ## Step 5 — Capture new knowledge (if warranted)
