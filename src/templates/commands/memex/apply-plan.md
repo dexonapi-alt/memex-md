@@ -21,16 +21,14 @@ Read the full plan file into context. Also read `.claude/knowledge/INDEX.md` and
 
 Look at the plan's `Status` field:
 
-- `draft`: the plan hasn't been reviewed yet. Warn the user — *"This plan is still a draft (not approved via `/memex:approve-plan`). On teams, plans usually pass PR review first. Proceed anyway?"* Only continue if the user confirms.
-- `approved (<date>)`: proceed.
-- `in-progress`: someone has already started this plan (possibly the same user recovering from a halt). Ask: *"Status says `in-progress` — resume from the top, or did a previous run stop mid-way?"* Proceed per the user's answer.
+- `draft` or `in-progress`: proceed (on a team, the PR that merged the plan file is the approval; no separate ceremony needed).
 - `implemented (<date>)`: stop. The plan is already done. Suggest `/memex:plan` for a follow-up.
 
 ## Step 2.5 — Confirm before executing
 
 Briefly restate to the user:
 
-> *"Ready to apply plan **<title>** (`<filename>`). Status: <current status>. Steps: N. Risks: <summary>. Proceed?"*
+> *"Ready to apply plan **<title>** (`<filename>`). Steps: N. Risks: <summary>. Proceed?"*
 
 If the user declines or wants changes, STOP. Do not modify any files.
 
@@ -40,9 +38,7 @@ Before touching any code, update the plan file's status via your Edit tool:
 
 - Change `- **Status:** <current>` to `- **Status:** in-progress`
 
-Also update `.claude/plans/INDEX.md` — change the plan's inline annotation to `*(in-progress)*`.
-
-This way, if execution halts or you're on a team, everyone can see work is underway.
+Also update `.claude/plans/INDEX.md` — change the plan's inline annotation to `*(in-progress)*`. So if execution halts or a teammate looks in, they can see work is underway.
 
 ## Step 3 — Execute each step in order
 

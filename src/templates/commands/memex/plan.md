@@ -107,7 +107,7 @@ Read back both `${PLAN_PATH}` and `.claude/plans/INDEX.md` so the on-disk state 
 
 ## Step 7 — Confirm to the user
 
-Tell the user: *"Plan saved to `${PLAN_PATH}` (status: draft). Review and refine. Next: merge the plan file via PR, run `/memex:approve-plan ${DATE}-${SLUG}` to mark it approved, then anyone can run `/memex:apply-plan ${DATE}-${SLUG}` to execute it."*
+Tell the user: *"Plan saved to `${PLAN_PATH}`. Review and refine (PR review handles team approval naturally). When ready to execute: `/memex:apply-plan ${DATE}-${SLUG}`."*
 
 If `--for <username>` was provided, also say: *"Assigned to @<username>."*
 

@@ -8,7 +8,7 @@ describe("init scaffolds slash commands + plans dir", () => {
   const dirs = [];
   after(() => dirs.forEach(cleanup));
 
-  test("installs all 9 /memex:* slash commands", () => {
+  test("installs all 8 /memex:* slash commands (no approve-plan)", () => {
     const dir = makeTempRepo();
     dirs.push(dir);
     const r = runCli(["init"], dir);
@@ -19,7 +19,6 @@ describe("init scaffolds slash commands + plans dir", () => {
       "preference.md",
       "fix.md",
       "plan.md",
-      "approve-plan.md",
       "apply-plan.md",
       "decide.md",
       "pattern.md",
@@ -33,9 +32,15 @@ describe("init scaffolds slash commands + plans dir", () => {
       assert.match(content, /^---/m, `${name} should have frontmatter`);
       assert.match(content, /\$ARGUMENTS/, `${name} should reference $ARGUMENTS`);
     }
+
+    // approve-plan was explicitly removed in v0.6.1 — PR review is the approval
+    assert.ok(
+      !fs.existsSync(path.join(cmdDir, "approve-plan.md")),
+      "approve-plan should NOT be installed — PR review handles approval"
+    );
   });
 
-  test("plan lifecycle templates describe the full state machine", () => {
+  test("plan lifecycle templates describe the 3-state machine", () => {
     const dir = makeTempRepo();
     dirs.push(dir);
     runCli(["init"], dir);
@@ -46,19 +51,14 @@ describe("init scaffolds slash commands + plans dir", () => {
     assert.match(planMd, /Status:\*\*\s*draft/);
     assert.match(planMd, /Assignee:/);
 
-    const approveMd = fs.readFileSync(
-      path.join(cmdDir, "approve-plan.md"),
-      "utf8"
-    );
-    assert.match(approveMd, /draft/);
-    assert.match(approveMd, /approved/);
-
     const applyMd = fs.readFileSync(path.join(cmdDir, "apply-plan.md"), "utf8");
     assert.match(applyMd, /in-progress/);
     assert.match(applyMd, /implemented/);
+    // apply-plan should NOT nag about draft status (that was the friction we removed)
+    assert.doesNotMatch(applyMd, /approve-plan/);
   });
 
-  test("plans INDEX seed documents the full lifecycle vocabulary", () => {
+  test("plans INDEX seed documents the 3-state lifecycle", () => {
     const dir = makeTempRepo();
     dirs.push(dir);
     runCli(["init"], dir);
@@ -67,10 +67,10 @@ describe("init scaffolds slash commands + plans dir", () => {
       "utf8"
     );
     assert.match(indexMd, /draft/);
-    assert.match(indexMd, /approved/);
     assert.match(indexMd, /in-progress/);
     assert.match(indexMd, /implemented/);
     assert.match(indexMd, /## Lifecycle/);
+    assert.doesNotMatch(indexMd, /approved/);
   });
 
   test("plans INDEX seed has both ## Plans and ## Applied sections", () => {

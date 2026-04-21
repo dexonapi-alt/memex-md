@@ -6,6 +6,29 @@ All notable changes to `memex-md` are documented here. This project follows [Sem
 
 Nothing yet.
 
+## [0.6.1] — 2026-04-20
+
+Course-correction release. v0.6.0 added `/memex:approve-plan` and an `approved` state to the plan lifecycle — but that duplicates what PR review already provides for free and inserts a ceremony most teams don't need. Rolling it back.
+
+### Removed
+
+- **`/memex:approve-plan` slash command** — deleted. PR review of the plan file *is* the approval; adding a separate command to flip a status field was redundant paperwork.
+- **The `approved` lifecycle state** — collapsed. Three states now: `draft → in-progress → implemented`, all managed automatically by `plan` and `apply-plan`. No manual status transitions.
+- **The "draft status check + warning" in `/memex:apply-plan`** — removed. `apply-plan` no longer nags the user about whether the plan has been formally approved. It just executes.
+
+### Kept
+
+- **`--for <github-username>`** on `/memex:plan` — genuinely useful for team assignment, stays.
+- **Plan archiving to `.claude/plans/applied/`** — stays.
+- **`in-progress` transient state** — set automatically by `apply-plan` on start, so concurrent teammates can see work is underway.
+
+### Changed
+
+- **README framing: stopped telling users to be disciplined.** Earlier copy said *"a few keystrokes of discipline"* and *"the discipline is enforced by the tool"* — that reads as the tool putting obligation on the user. Rewritten: *"They don't ask you to be disciplined — they do the capture for you. The path of least resistance happens to be the path that documents your work."* The tool removes friction; it doesn't demand virtue.
+- `init` scaffolds 8 slash commands (was 9 in v0.6.0).
+- Plans INDEX seed lifecycle description now shows 3 states.
+- Alice's Monday in the README narrative no longer includes an `/memex:approve-plan` step.
+
 ## [0.6.0] — 2026-04-20
 
 The "team coordination" release. Plans now have a lifecycle state machine and can be assigned to teammates.
@@ -164,7 +187,8 @@ The "team discipline" release. Project was renamed from `claude-memex` to `memex
 - Scaffolded `.claude/knowledge/` + `knowledge-update` skill + post-edit hook.
 - Zero runtime dependencies.
 
-[Unreleased]: https://github.com/dexonapi-alt/memex-md/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/dexonapi-alt/memex-md/compare/v0.6.1...HEAD
+[0.6.1]: https://github.com/dexonapi-alt/memex-md/releases/tag/v0.6.1
 [0.6.0]: https://github.com/dexonapi-alt/memex-md/releases/tag/v0.6.0
 [0.5.2]: https://github.com/dexonapi-alt/memex-md/releases/tag/v0.5.2
 [0.5.1]: https://github.com/dexonapi-alt/memex-md/releases/tag/v0.5.1

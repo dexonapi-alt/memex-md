@@ -99,11 +99,10 @@ Capture:
 - \`/memex:arch "<text>"\` — record a system-shape fact in \`architecture.md\` (prefers diagram + boundary over prose).
 - \`/memex:term "<term>: <definition>"\` — record a domain term in \`glossary.md\`.
 
-Plans (lifecycle: draft → approved → in-progress → implemented):
+Plans (lifecycle: draft → in-progress → implemented, all automatic):
 
-- \`/memex:plan [--for <github-username>] "<task>"\` — write a design plan under \`.claude/plans/<date>-<slug>.md\` with affected files, migrations, hooks, risks, and an ordered implementation plan. Optionally assigns to a teammate. Starts as \`draft\`.
-- \`/memex:approve-plan <filename-or-slug>\` — flip \`draft\` → \`approved (<date>)\` after PR review or team sign-off. Any team member can then execute.
-- \`/memex:apply-plan <filename-or-slug>\` — execute the plan step by step: marks \`in-progress\` on start, \`implemented (<date>)\` on success, captures new learnings back into \`.claude/knowledge/\`, then \`git mv\` the plan to \`.claude/plans/applied/\`.
+- \`/memex:plan [--for <github-username>] "<task>"\` — write a design plan under \`.claude/plans/<date>-<slug>.md\` with affected files, migrations, hooks, risks, and an ordered implementation plan. Optionally assigns to a teammate. Starts as \`draft\`. PR review is the approval mechanism — no extra command needed.
+- \`/memex:apply-plan <filename-or-slug>\` — execute the plan step by step: flips \`draft\` → \`in-progress\` on start, \`in-progress\` → \`implemented (<date>)\` on success. Captures new learnings back into \`.claude/knowledge/\`, then \`git mv\`s the plan to \`.claude/plans/applied/\`.
 
 Anything prefixed with \`/memex:\` touches the knowledge base, plans, or preferences — never your auto-memory.
 
@@ -194,7 +193,7 @@ export async function init(args: string[]): Promise<void> {
   console.log("Initialized memex-md:");
   console.log("  .claude/knowledge/                scaffolded");
   console.log("  .claude/skills/knowledge-update/  installed");
-  console.log("  .claude/commands/memex/           installed (9 slash commands)");
+  console.log("  .claude/commands/memex/           installed (8 slash commands)");
   console.log("  .claude/plans/                    scaffolded");
   console.log(
     `  .claude/hooks/pre-commit          ${hookInstalled ? "installed" : "skipped (exists)"}`

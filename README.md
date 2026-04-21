@@ -27,15 +27,9 @@ Meet **Alice** (architect), **Bob** and **Carol** (team), and **Dave** (joins ne
 Alice:  /memex:plan "migrate auth from JWT to session cookies" --for bob
 ```
 
-Claude reads the repo's knowledge base, scans the auth middleware, and writes `.claude/plans/2026-04-20-migrate-auth.md` — affected files, migrations, risks, a 7-step implementation order, verification steps. Status: `draft`, assigned to `@bob`.
+Claude reads the repo's knowledge base, scans the auth middleware, and writes `.claude/plans/2026-04-20-migrate-auth.md` — affected files, migrations, risks, a 7-step implementation order, verification steps. Assigned to `@bob`.
 
-Alice reviews the plan, tweaks step 3, opens a PR *"Plan: migrate auth to session cookies"*. The team reviews in GitHub, approves, merges to main. Alice runs:
-
-```
-Alice:  /memex:approve-plan 2026-04-20-migrate-auth
-```
-
-Status flips to `approved (2026-04-20)`. The plan is now a committed, reviewed design artifact the team can execute.
+Alice reviews the plan, tweaks step 3, opens a PR *"Plan: migrate auth to session cookies"*. The team reviews in GitHub, merges to main. The merged plan file is the approval — no extra ceremony needed.
 
 ### Tuesday — Bob implements
 
@@ -43,7 +37,7 @@ Status flips to `approved (2026-04-20)`. The plan is now a committed, reviewed d
 Bob:  /memex:apply-plan 2026-04-20-migrate-auth
 ```
 
-Claude checks the status (`approved` — good to go), re-reads the plan and the knowledge base, confirms with Bob *("7 steps, touches auth middleware + 4 route handlers, proceed?")*, then flips the status to `in-progress` and walks each step — writing code, verifying after each change. Mid-execution it hits an edge case: the rate limiter runs before JWT validation. Bob approves a plan amendment; Claude continues.
+Claude re-reads the plan and the knowledge base, confirms with Bob *("7 steps, touches auth middleware + 4 route handlers, proceed?")*, flips the status to `in-progress`, and walks each step — writing code, verifying after each change. Mid-execution it hits an edge case: the rate limiter runs before JWT validation. Bob approves a plan amendment; Claude continues.
 
 On completion:
 - Plan's `Status:` → `implemented (2026-04-21)`
@@ -79,7 +73,7 @@ Claude Code has memory — but it lives in your home folder and doesn't travel w
 
 **memex-md fixes this by making the knowledge a first-class part of the repo.** Plans, decisions, patterns, gotchas, and domain terms live as Markdown files under `.claude/` — reviewable in PRs, tracked by git, loaded into every Claude session, on every machine, for every teammate.
 
-Nine slash commands are the daily interface. They keep the discipline light: a few keystrokes instead of 400 words of reminders.
+Eight slash commands are the daily interface. They don't ask you to be disciplined — they *do the capture for you*. Type `/memex:fix`, Claude reads your diff and writes the gotcha. Type `/memex:plan`, Claude scans the repo and writes the plan file. The path of least resistance happens to be the path that documents your work.
 
 ---
 
@@ -94,11 +88,11 @@ git add .claude/ .github/ CLAUDE.md
 git commit -m "Add memex-md"
 ```
 
-**Exit and restart Claude Code** so the slash commands load. Type `/memex:` — autocomplete shows all nine. You're done with setup. Everything from here happens through slash commands during normal work.
+**Exit and restart Claude Code** so the slash commands load. Type `/memex:` — autocomplete shows all eight. You're done with setup. Everything from here happens through slash commands during normal work.
 
 ---
 
-## ✍️ The nine commands
+## ✍️ The eight commands
 
 **Capture — record something you learned**
 
@@ -113,13 +107,12 @@ git commit -m "Add memex-md"
 
 **Plans — design before, execute later, archive after**
 
-Plans have a status lifecycle: **draft → approved → in-progress → implemented**.
+Status flows automatically through **draft → in-progress → implemented**. PR review on the plan file *is* the approval — no extra command to type.
 
 | You type | memex-md does |
 |---|---|
-| `/memex:plan [--for <user>] "<task>"` | Writes `.claude/plans/<date>-<slug>.md`. Status: `draft`. Optionally marks assignee. |
-| `/memex:approve-plan <slug>` | Flips `draft → approved (<date>)` after PR review / team sign-off. |
-| `/memex:apply-plan <slug>` | Executes the plan: `approved → in-progress → implemented (<date>)`, captures learnings, `git mv`'s the plan to `.claude/plans/applied/`. |
+| `/memex:plan [--for <user>] "<task>"` | Writes `.claude/plans/<date>-<slug>.md` as `draft`. `--for` marks the intended assignee. |
+| `/memex:apply-plan <slug>` | Executes the plan: flips `draft → in-progress` on start, `in-progress → implemented (<date>)` on success. Captures new learnings into `.claude/knowledge/`, then `git mv`s the plan to `.claude/plans/applied/`. |
 
 Anything prefixed with `/memex:` lands in git, is reviewable in PRs, and is re-read by Claude at the start of every session. **The disk is the source of truth.** Claude is instructed (via the `CLAUDE.md` block `init` installs) to re-read the affected file after every `/memex:*` command so the fresh state is always in its context.
 
@@ -136,10 +129,9 @@ Anything prefixed with `/memex:` lands in git, is reviewable in PRs, and is re-r
   plans/                           ← design artifacts
     INDEX.md
     applied/                       ← plans that have been executed
-  commands/memex/                  ← the 9 slash commands above
-    preference.md  fix.md         decide.md    pattern.md
-    arch.md        term.md        plan.md
-    approve-plan.md                apply-plan.md
+  commands/memex/                  ← the 8 slash commands above
+    preference.md  fix.md  decide.md  pattern.md
+    arch.md        term.md plan.md   apply-plan.md
   skills/knowledge-update/         ← tells Claude when to update the KB
   hooks/pre-commit                 ← nudge on sensitive file changes
   settings.json                    ← PostToolUse + SessionStart hooks
@@ -275,7 +267,7 @@ This gives you a lightweight intelligence layer without pulling in a graph DB: p
 
 ## 🧭 The `/memex:` contract (how slash commands stay reliable)
 
-The nine commands at the top of this README are more than shortcuts. They enforce three guarantees the tool cannot deliver any other way:
+The eight commands at the top of this README are more than shortcuts. They enforce three guarantees the tool cannot deliver any other way:
 
 ### 1. Everything under `/memex:` lands in git
 Claude's default auto-memory (`~/.claude/...`) is per-user, per-machine, per-OS-install. Your teammate, your other laptop, and CI all start cold. Every `/memex:*` command writes to a file inside the repo (`CLAUDE.md`, `.claude/knowledge/*`, `.claude/plans/*`) — so the knowledge ships with the code.
@@ -284,7 +276,7 @@ Claude's default auto-memory (`~/.claude/...`) is per-user, per-machine, per-OS-
 memex-md's `CLAUDE.md` block includes an explicit *re-read rule*: after any `/memex:*` slash command or `memex-md` CLI invocation, the disk state has changed, and Claude must re-read the affected `INDEX.md` + scope/plan file before its next substantive response. **The disk is the source of truth** — not what Claude remembers writing a moment ago.
 
 ### 3. Durability for teams
-Slash command templates live at `.claude/commands/memex/*.md` in your repo. Every teammate who clones gets the same nine commands on their first Claude Code session. No shared config server, no per-user setup, no "did you install the extension?" — it's code, not configuration.
+Slash command templates live at `.claude/commands/memex/*.md` in your repo. Every teammate who clones gets the same eight commands on their first Claude Code session. No shared config server, no per-user setup, no "did you install the extension?" — it's code, not configuration.
 
 ### The routing rule
 memex-md's `CLAUDE.md` block also instructs Claude: **if the preference is about the user (shell habit, editor, timezone), it goes to auto-memory; if it's about the project (convention, decision, pattern, gotcha, domain term), it goes in git via memex-md.** The `/memex:preference` command applies this rule automatically. If you invoke it with a clearly-personal preference, Claude will flag it and offer to save to auto-memory instead.
